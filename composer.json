@@ -1,5 +1,5 @@
 {
-    "name": "comp1687/app.cw",
+    "name": "comp1687/cw",
     "description": "Web Application Coursework",
     "require": {
         "phroute/phroute": "1.*",
