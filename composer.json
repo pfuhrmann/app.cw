@@ -1,0 +1,15 @@
+{
+    "name": "comp1687/app.cw",
+    "description": "Web Application Coursework",
+    "require": {
+        "phroute/phroute": "1.*",
+        "twig/twig": "~1.0"
+    },
+    "license": "private",
+    "authors": [
+        {
+            "name": "Patrik Fuhrmann",
+            "email": "fuhrmann.patrik@gmail.com"
+        }
+    ]
+}
