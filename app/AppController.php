@@ -21,7 +21,7 @@ class AppController
 
     /**
      * Index page
-     * URI: /
+     * GET /
      */
     public function getIndex()
     {
@@ -30,11 +30,20 @@ class AppController
 
     /**
      * Level 1 : Account creation : 18 marks
-     * URI: registration
+     * GET registration
      */
     public function getRegistration()
     {
         echo $this->render('registration.html', []);
+    }
+
+    /**
+     * Level 3 : Authentication : 10 marks
+     * GET login
+     */
+    public function getLogin()
+    {
+        echo $this->render('login.html', []);
     }
 
     /**

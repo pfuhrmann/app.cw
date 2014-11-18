@@ -11,8 +11,9 @@ $twig = new Twig_Environment($loader);
 $router = new Phroute\RouteCollector();
 $router->controller('/', new COMP1687\CW\AppController($twig));
 $dispatcher = new Phroute\Dispatcher($router);
-// This is hack for stuweb webserver
-$uri = (!empty($_GET['uri'])) ? $_GET['uri'] : '/';
+// This is hack for stuweb web server
+// We are routing everything through index
+$uri = (isset($_GET['uri'])) ? $_GET['uri'] : '/';
 $response = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], parse_url($uri, PHP_URL_PATH));
 
 // Print response from router

@@ -2,7 +2,7 @@
 <html>
 <head>
     {% block head %}
-    <title>{% block title %}{% endblock %} - My Webpage</title>
+    <title>{% block title %}{% endblock %} - Sitters Royal Borough of Greenwich</title>
     <link rel="stylesheet" href="assets/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/bootstrap/dist/css/bootstrap-theme.min.css">
     {% endblock %}
@@ -10,12 +10,10 @@
 <body>
     <div class="container">
         {% block content %}{% endblock %}
-    </div>
 
-    <div id="footer">
-        {% block footer %}
-        &copy; Copyright 2011 by <a href="http://domain.invalid/">you</a>.
-        {% endblock %}
+        <div class="col-md-10 column">
+            <p>&copy; Copyright 2014. Royal Borough of Greenwich.</p>
+        </div>
     </div>
 
     <script type="text/javascript" src="assets/jquery/dist/jquery.min.js"></script>
