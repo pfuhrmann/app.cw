@@ -44,7 +44,7 @@ class AppController
      */
     private function render($template, $options)
     {
-        $template = $this->twig->loadTemplate($template);
+        $template = $this->twig->loadTemplate($template.'.twig');
         echo $template->render($options);
     }
 }
