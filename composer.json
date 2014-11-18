@@ -11,5 +11,10 @@
             "name": "Patrik Fuhrmann",
             "email": "fuhrmann.patrik@gmail.com"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": {
+            "COMP1687\\CW\\": "app/"
+        }
+    }
 }
