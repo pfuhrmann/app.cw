@@ -3,7 +3,8 @@
     "description": "Web Application Coursework",
     "require": {
         "phroute/phroute": "1.*",
-        "twig/twig": "~1.0"
+        "twig/twig": "~1.0",
+        "gregwar/captcha": "~1.0"
     },
     "license": "private",
     "authors": [

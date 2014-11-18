@@ -2,6 +2,7 @@
 
 namespace COMP1687\CW;
 
+use Gregwar\Captcha\CaptchaBuilder;
 use Twig_Environment;
 
 class AppController
@@ -34,6 +35,23 @@ class AppController
      */
     public function getRegistration()
     {
+        // Generate captcha
+        $builder = new CaptchaBuilder;
+        $builder->build();
+
+        echo $this->render('registration.html', [
+            'captcha' => $builder->inline()
+        ]);
+    }
+
+    /**
+     * Handle registration form
+     * POST registration
+     */
+    public function postRegistration()
+    {
+        $formData = $_POST;
+
         echo $this->render('registration.html', []);
     }
 
