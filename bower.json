@@ -1,0 +1,7 @@
+{
+    "name": "comp1687/cw",
+    "private": true,
+    "dependencies": {
+        "jquery": "~1.11.1"
+    }
+}
