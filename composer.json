@@ -4,7 +4,8 @@
     "require": {
         "phroute/phroute": "1.*",
         "twig/twig": "~1.0",
-        "gregwar/captcha": "~1.0"
+        "gregwar/captcha": "~1.0",
+        "respect/validation": "~0.6"
     },
     "license": "private",
     "authors": [
@@ -15,7 +16,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "COMP1687\\CW\\": "app/"
+            "COMP1687\\CW\\": "app/",
+            "Respect\\Validation\\": "validation/"
         }
     }
 }
