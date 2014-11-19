@@ -25,7 +25,7 @@ class PasswordMatches extends AbstractRule
 
     public function validate($input)
     {
-        $stmt = $this->db->prepare("SELECT password FROM accounts WHERE username=? LIMIT 1");
+        $stmt = $this->db->prepare("SELECT password FROM account WHERE username=? LIMIT 1");
         $stmt->execute([$this->username]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 

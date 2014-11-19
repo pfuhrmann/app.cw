@@ -8,7 +8,18 @@
         <h1>My Services</h1>
 
         <div class="jumbotron">
-            <p>Service details here</p>
+            <p>
+                <strong>Business name:</strong> {{ service.business }}
+            </p>
+            <p>
+                <strong>Postcode:</strong> {{ service.postcode }}
+            </p>
+            <p>
+                <strong>Type:</strong> {{ service.type }}
+            </p>
+            <p>
+                <strong>Details:</strong> {{ service.details }}
+            </p>
             <div class="col-sm-2">
                 <a class="btn btn-success btn-large" href="index.php?uri=addservice">Update Details</a>
             </div>
