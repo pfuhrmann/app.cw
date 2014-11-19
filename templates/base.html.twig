@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>{% block title %}{% endblock %} - Sitters Royal Borough of Greenwich</title>
+    <title>{% block title %}{% endblock %} - Greenwich Sitter's</title>
     <link rel="stylesheet" href="assets/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="assets/bootstrap/dist/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" href="styles.css" />
@@ -20,12 +20,12 @@
                     <div class="navbar-header navbar-right">
                     <ul class="nav navbar-nav navbar-right">
                         {# Logged in user #}
-                        {% if user and user.active == '1' %}
+                        {% if user is not empty and user.active == '1' %}
                         <li>
                             <a href="#">My Services</a>
                         </li>
                         <li>
-                            <a href="index.php?uri=logout">Logout [ {{ user.username }} ]</a>
+                            <a href="index.php?uri=logout" id="logout">Logout [ {{ user.username }} ]</a>
                         </li>
                         {% else %}
                         <li>
@@ -44,11 +44,18 @@
         {% block content %}{% endblock %}
 
         <div class="col-md-10 column">
-            <p>&copy; Copyright 2014. Royal Borough of Greenwich.</p>
+            <p>&#169; Copyright 2014. Royal Borough of Greenwich.</p>
         </div>
     </div>
 
     <script type="text/javascript" src="assets/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="assets/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        $( "#logout" ).click(function() {
+            var c = confirm("Are you sure you want to logout?");
+            return c; //you can just return c because it will be true or false
+        });
+    </script>
 </body>
 </html>

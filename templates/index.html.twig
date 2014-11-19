@@ -1,22 +1,23 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Index{% endblock %}
+{% block title %}Main Page{% endblock %}
 
 {% block content %}
 <div class="row clearfix">
     <div class="col-md-10 column">
-        <h1>Index</h1>
-    </div>
-    <div class="col-md-10 column">
+        <h1>Greenwich Sitter's</h1>
+
         <div class="jumbotron">
-            <h1>
-                Hello, world!
-            </h1>
             <p>
-                This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.
+                Welcome to Greenwich Sitter's website. You can either register your local sitting business or search for sitters.
             </p>
             <p>
-                <a class="btn btn-primary btn-large" href="#">Learn more</a>
+                <div class="col-sm-2 col-xs-1">
+                    <a class="btn btn-primary btn-large" href="index.php?uri=registration">Register Local Service</a>
+                </div>
+                <div class="col-sm-2 col-sm-offset-2 col-xs-1 col-xs-offset-4">
+                    <a class="btn btn-success btn-large" href="index.php?uri=search">Search For Sitter</a>
+                </div>
             </p>
         </div>
     </div>
