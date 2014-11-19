@@ -1,3 +1,15 @@
 .push-top {
     padding-top: 4px;
 }
+
+@media (min-width: 768px) {
+    .navbar-right {
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar-right {
+        margin-left: 10px;
+    }
+}

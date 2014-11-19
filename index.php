@@ -7,6 +7,7 @@ require 'vendor/autoload.php';
 // Bootstrap Twig
 $loader = new Twig_Loader_Filesystem('templates');
 $twig = new Twig_Environment($loader);
+$twig->addExtension(new COMP1687\CW\SessionTwigExtension());
 
 // Router bootstrap
 $router = new Phroute\RouteCollector();

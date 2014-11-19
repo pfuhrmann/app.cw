@@ -132,8 +132,9 @@ class AppController
         mail($formData['email'], $subject, $message);
 
         // Login user
-        $_SESSION['username'] = $formData['username'];
-        $_SESSION['email'] = $formData['email'];
+        $_SESSION['user']['username'] = $formData['username'];
+        $_SESSION['user']['email'] = $formData['email'];
+        $_SESSION['user']['active'] = '0';
 
         // Redirect to verification page
         header('Location: index.php?uri=verify');
@@ -146,22 +147,20 @@ class AppController
     public function getVerify()
     {
         // Check if logged in
-        if (empty($_SESSION['username'])) {
+        if (empty($_SESSION['user']['username'])) {
             header("HTTP/1.0 403 Forbidden");
             return "You are not authorized to access this page!";
         }
 
         // Check if user actually needs verification
-        $stmt = $this->db->prepare("SELECT active FROM accounts WHERE username=? LIMIT 1");
-        $stmt->execute([$_SESSION['username']]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($row['active'] === '1') {
+        if ($_SESSION['user']['active'] === '1') {
             // Activated already, redirect to main page
-            header('Location: /');
+            header('Location: ./');
         }
 
         return $this->render('verify.html', [
-            'displayInfo' => true
+            'displayInfo' => true,
+            'email' => $_SESSION['user']['email'],
         ]);
     }
 
@@ -175,7 +174,7 @@ class AppController
 
         // Get code for this user
         $stmt = $this->db->prepare("SELECT code FROM accounts WHERE username=? LIMIT 1");
-        $stmt->execute([$_SESSION['username']]);
+        $stmt->execute([$_SESSION['user']['username']]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // Validate code
@@ -200,8 +199,10 @@ class AppController
         // All good, activate account
         $stmt = $this->db->prepare("UPDATE accounts SET active = 1, code = ''");
         $stmt->execute();
+        $_SESSION['user']['active'] = '1';
 
-        die('all good');
+        // Redirect to main page
+        header('Location: ./');
     }
 
     /**
@@ -211,6 +212,15 @@ class AppController
     public function getLogin()
     {
         echo $this->render('login.html', []);
+    }
+
+    /**
+     * Logout user out of system
+     */
+    public function getLogout()
+    {
+        session_destroy();
+        header('Location: ./');
     }
 
     /**
