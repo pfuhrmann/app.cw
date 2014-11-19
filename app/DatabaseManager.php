@@ -2,6 +2,10 @@
 
 namespace COMP1687\CW;
 
+/**
+ * Singleton for database management.
+ * Initiates PDO based on environment.
+ */
 class DatabaseManager
 {
     protected static $db;

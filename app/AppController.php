@@ -119,9 +119,10 @@ class AppController
         }
 
         // All good, create account
-        $stmt = $this->db->prepare(" INSERT INTO user (username, password, email) VALUES (?, ?, ?)");
+        $pass = password_hash($formData['password'], PASSWORD_BCRYPT);
+        $stmt = $this->db->prepare(" INSERT INTO accounts (username, password, email) VALUES (?, ?, ?)");
         var_dump($stmt->execute([
-            $formData['username'], $formData['password'], $formData['email']
+            $formData['username'], $pass, $formData['email']
         ]));
     }
 
