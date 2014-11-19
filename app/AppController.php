@@ -44,6 +44,7 @@ class AppController
     public function getRegistration()
     {
         $builder = $this->generateCaptcha();
+
         return $this->render('registration.html', [
             'captcha' => $builder->inline()
         ]);
@@ -182,7 +183,7 @@ class AppController
         try {
             $codeValidator->assert($formData['code']);
         } catch(\InvalidArgumentException $e) {
-            $errors['username'] = array_filter($e->findMessages([
+            $errors['code'] = array_filter($e->findMessages([
                 'equals'   => '<strong>Code</strong> entered is invalid, please recheck your verification email',
                 'notEmpty' => 'Please provide activation <strong>code</strong>, which you received in the verification email',
             ]));
@@ -212,6 +213,58 @@ class AppController
     public function getLogin()
     {
         echo $this->render('login.html', []);
+    }
+
+    /**
+     * Handle login form
+     */
+    public function postLogin()
+    {
+        $formData = $_POST;
+        $errors = [];
+
+        // Validate username
+        $usernameValidator = Validator::allOf(Validator::notEmpty(), Validator::uniqueUser()->not());
+        if (!$usernameValidator->validate($formData['username'])) {
+            $error['login']['false'] = 'Incorrect <strong>username</strong> or <strong>password</strong>';
+        }
+
+        // Validate password
+        $passwordValidator = Validator::notEmpty()->passwordMatches($formData['password'], $formData['username']);
+        try {
+            $passwordValidator->assert($formData['password']);
+        } catch(\InvalidArgumentException $e) {
+            $errors['login']['false'] = 'Incorrect <strong>username</strong> or <strong>password</strong>';
+        }
+
+        // We get errors so display login page again
+        if (!empty($errors)) {
+            return $this->render('login.html', [
+                'errorsAll' => $errors,
+            ]);
+        }
+
+        // Get user's email
+        $stmt = $this->db->prepare("SELECT email FROM accounts WHERE username=? LIMIT 1");
+        $stmt->execute([$formData['username']]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Login user
+        $_SESSION['user']['username'] = $formData['username'];
+        $_SESSION['user']['email'] = $row['email'];
+
+        // Check user is active
+        $userValidator = Validator::activeUser();
+        if (!($userValidator->validate($formData['username']))) {
+            // Not active, redirect to verify
+            $_SESSION['user']['active'] = '0';
+            header('Location: index.php?uri=verify');
+            die(); // This is necessary
+        }
+
+        // All good, redirect to main page
+        $_SESSION['user']['active'] = '1';
+        header('Location: ./');
     }
 
     /**
