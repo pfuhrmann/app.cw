@@ -1,13 +1,33 @@
 <?php
 
-namespace COMP1687\CW\Controllers;
+namespace COMP1687\CW;
 
 use Gregwar\Captcha\CaptchaBuilder;
 use PDO;
 use Respect\Validation\Validator;
+use Twig_Environment;
 
-class AuthenticationController extends BaseController
+class AppController
 {
+    /**
+     * @var Twig_Environment
+     */
+    protected $twig;
+
+    /**
+     * @var PDO
+     */
+    protected $db;
+
+    /**
+     * @param Twig_Environment $twig
+     */
+    public function __construct(Twig_Environment $twig)
+    {
+        $this->twig = $twig;
+        $this->db = DatabaseManager::getInstance();
+    }
+
     /**
      * Index page
      * GET /
@@ -25,7 +45,7 @@ class AuthenticationController extends BaseController
     {
         $builder = $this->generateCaptcha();
 
-        return $this->render('authentication/registration.html', [
+        return $this->render('registration.html', [
             'captcha' => $builder->inline()
         ]);
     }
@@ -92,7 +112,7 @@ class AuthenticationController extends BaseController
         if (!empty($errors)) {
             $builder = $this->generateCaptcha();
 
-            return $this->render('authentication/registration.html', [
+            return $this->render('registration.html', [
                 'input'     => $formData,
                 'errorsAll' => $errors,
                 'captcha'   => $builder->inline(),
@@ -118,7 +138,7 @@ class AuthenticationController extends BaseController
         $_SESSION['user']['active'] = '0';
 
         // Redirect to verification page
-        return $this->redirect('verify');
+        header('Location: index.php?uri=verify');
     }
 
     /**
@@ -127,17 +147,19 @@ class AuthenticationController extends BaseController
      */
     public function getVerify()
     {
-        if (!$this->checkAuthentication("0")) {
+        // Check if logged in
+        if (empty($_SESSION['user']['username'])) {
+            header("HTTP/1.0 403 Forbidden");
             return "You are not authorized to access this page!";
         }
 
         // Check if user actually needs verification
         if ($_SESSION['user']['active'] === '1') {
             // Activated already, redirect to main page
-            return $this->redirect();
+            header('Location: ./');
         }
 
-        return $this->render('authentication/verify.html', [
+        return $this->render('verify.html', [
             'displayInfo' => true,
             'email' => $_SESSION['user']['email'],
         ]);
@@ -169,7 +191,7 @@ class AuthenticationController extends BaseController
 
         // We get errors so display verify form again
         if (!empty($errors)) {
-            return $this->render('authentication/verify.html', [
+            return $this->render('verify.html', [
                 'errorsAll' => $errors,
                 'displayInfo' => false,
             ]);
@@ -181,7 +203,7 @@ class AuthenticationController extends BaseController
         $_SESSION['user']['active'] = '1';
 
         // Redirect to main page
-        return $this->redirect();
+        header('Location: ./');
     }
 
     /**
@@ -190,7 +212,7 @@ class AuthenticationController extends BaseController
      */
     public function getLogin()
     {
-        echo $this->render('authentication/login.html', []);
+        echo $this->render('login.html', []);
     }
 
     /**
@@ -217,7 +239,7 @@ class AuthenticationController extends BaseController
 
         // We get errors so display login page again
         if (!empty($errors)) {
-            return $this->render('authentication/login.html', [
+            return $this->render('login.html', [
                 'errorsAll' => $errors,
             ]);
         }
@@ -236,23 +258,33 @@ class AuthenticationController extends BaseController
         if (!($userValidator->validate($formData['username']))) {
             // Not active, redirect to verify
             $_SESSION['user']['active'] = '0';
-
-            return $this->redirect('verify');
+            header('Location: index.php?uri=verify');
+            die(); // This is necessary
         }
 
         // All good, redirect to main page
         $_SESSION['user']['active'] = '1';
-        $this->redirect();
+        header('Location: ./');
     }
 
     /**
-     * Log user out of system
+     * Logout user out of system
      */
     public function getLogout()
     {
         session_destroy();
+        header('Location: ./');
+    }
 
-        return $this->redirect();
+    /**
+     * Render Twig template
+     *
+     * @param $template
+     */
+    private function render($template, $options)
+    {
+        $template = $this->twig->loadTemplate($template.'.twig');
+        echo $template->render($options);
     }
 
     /**
@@ -262,6 +294,7 @@ class AuthenticationController extends BaseController
      */
     private function generateCaptcha()
     {
+        // Generate captcha
         $builder = new CaptchaBuilder;
         $builder->build();
         // Store phrase to use later in validation

@@ -55,10 +55,10 @@ abstract class BaseController
     /**
      * @return string
      */
-    protected function checkAuthentication()
+    protected function checkAuthentication($active = "1")
     {
         // Must be authenticated
-        if (!isset($_SESSION['user']) || $_SESSION['user']['active'] !== '1') {
+        if (!isset($_SESSION['user']) || $_SESSION['user']['active'] !== $active) {
             header("HTTP/1.0 403 Forbidden");
 
             return false;
