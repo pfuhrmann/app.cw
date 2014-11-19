@@ -25,7 +25,7 @@ class AuthenticationController extends BaseController
     {
         $builder = $this->generateCaptcha();
 
-        return $this->render('registration.html', [
+        return $this->render('authentication/registration.html', [
             'captcha' => $builder->inline()
         ]);
     }
@@ -92,7 +92,7 @@ class AuthenticationController extends BaseController
         if (!empty($errors)) {
             $builder = $this->generateCaptcha();
 
-            return $this->render('registration.html', [
+            return $this->render('authentication/registration.html', [
                 'input'     => $formData,
                 'errorsAll' => $errors,
                 'captcha'   => $builder->inline(),
@@ -127,16 +127,14 @@ class AuthenticationController extends BaseController
      */
     public function getVerify()
     {
-        // Check if logged in
-        if (empty($_SESSION['user']['username'])) {
-            header("HTTP/1.0 403 Forbidden");
+        if (!$this->checkAuthentication()) {
             return "You are not authorized to access this page!";
         }
 
         // Check if user actually needs verification
         if ($_SESSION['user']['active'] === '1') {
             // Activated already, redirect to main page
-            return $this->redirect('./');
+            return $this->redirect();
         }
 
         return $this->render('verify.html', [
@@ -171,7 +169,7 @@ class AuthenticationController extends BaseController
 
         // We get errors so display verify form again
         if (!empty($errors)) {
-            return $this->render('verify.html', [
+            return $this->render('authentication/verify.html', [
                 'errorsAll' => $errors,
                 'displayInfo' => false,
             ]);
@@ -183,7 +181,7 @@ class AuthenticationController extends BaseController
         $_SESSION['user']['active'] = '1';
 
         // Redirect to main page
-        return $this->redirect('./');
+        return $this->redirect();
     }
 
     /**
@@ -192,7 +190,7 @@ class AuthenticationController extends BaseController
      */
     public function getLogin()
     {
-        echo $this->render('login.html', []);
+        echo $this->render('authentication/login.html', []);
     }
 
     /**
@@ -219,7 +217,7 @@ class AuthenticationController extends BaseController
 
         // We get errors so display login page again
         if (!empty($errors)) {
-            return $this->render('login.html', [
+            return $this->render('authentication/login.html', [
                 'errorsAll' => $errors,
             ]);
         }
@@ -238,6 +236,7 @@ class AuthenticationController extends BaseController
         if (!($userValidator->validate($formData['username']))) {
             // Not active, redirect to verify
             $_SESSION['user']['active'] = '0';
+
             return $this->redirect('verify');
         }
 
@@ -252,6 +251,7 @@ class AuthenticationController extends BaseController
     public function getLogout()
     {
         session_destroy();
+
         return $this->redirect();
     }
 
@@ -262,7 +262,6 @@ class AuthenticationController extends BaseController
      */
     private function generateCaptcha()
     {
-        // Generate captcha
         $builder = new CaptchaBuilder;
         $builder->build();
         // Store phrase to use later in validation
