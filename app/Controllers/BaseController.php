@@ -6,7 +6,7 @@ use COMP1687\CW\DatabaseManager;
 use PDO;
 use Twig_Environment;
 
-class BaseController
+abstract class BaseController
 {
     /**
      * @var Twig_Environment
@@ -50,5 +50,20 @@ class BaseController
         }
 
         return header('Location: index.php?uri='.$uri);
+    }
+
+    /**
+     * @return string
+     */
+    protected function checkAuthentication()
+    {
+        // Must be authenticated
+        if (!isset($_SESSION['user']) || $_SESSION['user']['active'] !== '1') {
+            header("HTTP/1.0 403 Forbidden");
+
+            return false;
+        }
+
+        return true;
     }
 }
