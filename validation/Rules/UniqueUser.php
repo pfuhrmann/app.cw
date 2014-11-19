@@ -23,7 +23,7 @@ class UniqueUser extends AbstractRule
 
     public function validate($input)
     {
-        $stmt = $this->db->prepare("SELECT count('id') AS count FROM accounts WHERE username=?");
+        $stmt = $this->db->prepare("SELECT count('id') AS count FROM account WHERE username=?");
         $stmt->execute([$input]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 

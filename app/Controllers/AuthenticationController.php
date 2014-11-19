@@ -55,7 +55,6 @@ class AuthenticationController extends BaseController
 
         // Validate password
         $passwordValidator = Validator::length(6, 20)->notEmpty();
-
         try {
             $passwordValidator->assert($formData['password']);
         } catch(\InvalidArgumentException $e) {
@@ -76,7 +75,7 @@ class AuthenticationController extends BaseController
             ]));
         }
 
-        /*// Validate captcha
+        // Validate captcha
         $captchaValidator = Validator::equals($_SESSION['phrase'])->notEmpty();
         try {
             $captchaValidator->assert($formData['captcha']);
@@ -85,8 +84,7 @@ class AuthenticationController extends BaseController
                 'notEmpty' => '<strong>CAPTCHA</strong> cannot be empty',
                 'equals'   => 'Incorrect <strong>CAPTCHA</strong>, please try again',
             ]));
-        }*/
-
+        }
 
         // We get errors so display reg form again
         if (!empty($errors)) {
@@ -102,10 +100,14 @@ class AuthenticationController extends BaseController
         // All good, create account
         $pass = password_hash($formData['password'], PASSWORD_BCRYPT);
         $code = rand(10000, 99999);
-        $stmt = $this->db->prepare("INSERT INTO accounts (username, password, email, code) VALUES (?, ?, ?, ?)");
+        $stmt = $this->db->prepare("INSERT INTO account (username, password, email, code) VALUES (?, ?, ?, ?)");
         $stmt->execute([
             $formData['username'], $pass, $formData['email'], $code
         ]);
+
+        // Create empty service in DB
+        $stmt = $this->db->prepare("INSERT INTO service (account_id) VALUES (?)");
+        $stmt->execute([$this->db->lastInsertId()]);
 
         // Send verification email
         $subject = 'Confirm your sitter\'s account';
@@ -152,7 +154,7 @@ class AuthenticationController extends BaseController
         $errors = [];
 
         // Get code for this user
-        $stmt = $this->db->prepare("SELECT code FROM accounts WHERE username=? LIMIT 1");
+        $stmt = $this->db->prepare("SELECT code FROM account WHERE username=? LIMIT 1");
         $stmt->execute([$_SESSION['user']['username']]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -176,8 +178,8 @@ class AuthenticationController extends BaseController
         }
 
         // All good, activate account
-        $stmt = $this->db->prepare("UPDATE accounts SET active = 1, code = ''");
-        $stmt->execute();
+        $stmt = $this->db->prepare("UPDATE account SET active = 1, code = '' WHERE username=? LIMIT 1");
+        $stmt->execute([$_SESSION['user']['username']]);
         $_SESSION['user']['active'] = '1';
 
         // Redirect to main page
@@ -223,7 +225,7 @@ class AuthenticationController extends BaseController
         }
 
         // Get user's email
-        $stmt = $this->db->prepare("SELECT email FROM accounts WHERE username=? LIMIT 1");
+        $stmt = $this->db->prepare("SELECT id, email FROM account WHERE username=? LIMIT 1");
         $stmt->execute([$formData['username']]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -242,6 +244,7 @@ class AuthenticationController extends BaseController
 
         // All good, redirect to main page
         $_SESSION['user']['active'] = '1';
+        $_SESSION['user']['id'] = $row['id'];
         $this->redirect();
     }
 

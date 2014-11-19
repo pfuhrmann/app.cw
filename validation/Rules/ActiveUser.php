@@ -22,7 +22,7 @@ class ActiveUser extends AbstractRule
 
     public function validate($input)
     {
-        $stmt = $this->db->prepare("SELECT active FROM accounts WHERE username=?");
+        $stmt = $this->db->prepare("SELECT active FROM account WHERE username=?");
         $stmt->execute([$input]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
