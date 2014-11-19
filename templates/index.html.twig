@@ -5,21 +5,36 @@
 {% block content %}
 <div class="row clearfix">
     <div class="col-md-10 column">
+        {% if user is not empty and user.active == '1' %}
+        {# Authenticated user #}
+        <h1>Welcome {{ user.username }}</h1>
+
+        <div class="jumbotron">
+            <p>
+                This is your personal business account where you can update your advertised business details.
+            </p>
+
+            <p>
+                <a class="btn btn-primary btn-large" href="index.php?uri=services">My Services</a>
+            </p>
+        </div>
+        {% else %}
+        {# Anonymous user #}
         <h1>Greenwich Sitter's</h1>
 
         <div class="jumbotron">
             <p>
                 Welcome to Greenwich Sitter's website. You can either register your local sitting business or search for sitters.
             </p>
-            <p>
-                <div class="col-sm-2 col-xs-1">
-                    <a class="btn btn-primary btn-large" href="index.php?uri=registration">Register Local Service</a>
-                </div>
-                <div class="col-sm-2 col-sm-offset-2 col-xs-1 col-xs-offset-4">
-                    <a class="btn btn-success btn-large" href="index.php?uri=search">Search For Sitter</a>
-                </div>
-            </p>
+
+            <div class="col-sm-2 col-xs-1">
+                <a class="btn btn-primary btn-large" href="index.php?uri=registration">Register Local Service</a>
+            </div>
+            <div class="col-sm-2 col-sm-offset-2 col-xs-1 col-xs-offset-4">
+                <a class="btn btn-success btn-large" href="index.php?uri=search">Search For Sitter</a>
+            </div>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

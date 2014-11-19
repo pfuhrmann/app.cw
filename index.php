@@ -11,7 +11,7 @@ $twig->addExtension(new COMP1687\CW\SessionTwigExtension());
 
 // Router bootstrap
 $router = new Phroute\RouteCollector();
-$router->controller('/', new COMP1687\CW\AppController($twig));
+$router->controller('/', new COMP1687\CW\Controllers\AuthenticationController($twig));
 $dispatcher = new Phroute\Dispatcher($router);
 // This is hack for stuweb web server
 // We are routing everything through index
