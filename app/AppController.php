@@ -230,7 +230,7 @@ class AppController
         }
 
         // Validate password
-        $passwordValidator = Validator::notEmpty()->passwordMatches($formData['password'], $formData['username']);
+        $passwordValidator = Validator::notEmpty()->passwordMatches($formData['username']);
         try {
             $passwordValidator->assert($formData['password']);
         } catch(\InvalidArgumentException $e) {
