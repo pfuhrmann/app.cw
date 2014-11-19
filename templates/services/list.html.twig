@@ -8,20 +8,48 @@
         <h1>My Services</h1>
 
         <div class="jumbotron">
-            <p>
-                <strong>Business name:</strong> {{ service.business }}
-            </p>
-            <p>
-                <strong>Postcode:</strong> {{ service.postcode }}
-            </p>
-            <p>
-                <strong>Type:</strong> {{ service.type }}
-            </p>
-            <p>
-                <strong>Details:</strong> {{ service.details }}
-            </p>
-            <div class="col-sm-2">
-                <a class="btn btn-success btn-large" href="index.php?uri=addservice">Update Details</a>
+            <div class="row push-bottom">
+                <div class="col-sm-2">
+                    <p><a class="btn btn-success btn-warning" href="index.php?uri=addservice">Update Details</a></p>
+                </div>
+            </div>
+
+            <div class="row push-bottom">
+                <div class="col-sm-2">
+                    <strong>Business:</strong>
+                </div>
+                <div class="col-sm-7">
+                    {{ service.business }}
+                </div>
+            </div>
+
+            <div class="row push-bottom">
+                <div class="col-sm-2">
+                    <strong>Postcode:</strong>
+                </div>
+                <div class="col-sm-7">
+                    {{ service.postcode }}
+                </div>
+            </div>
+
+            <div class="row push-bottom">
+                <div class="col-sm-2">
+                    <strong>Type:</strong>
+                </div>
+                <div class="col-sm-7">
+                    {{ service.type }}
+                </div>
+            </div>
+
+            <div class="row push-bottom">
+                <div class="col-sm-2">
+                    <strong>Details:</strong>
+                </div>
+                <div class="col-sm-7">
+                    {% autoescape false %}
+                    {{ service.details }}
+                    {% endautoescape %}
+                </div>
             </div>
         </div>
     </div>

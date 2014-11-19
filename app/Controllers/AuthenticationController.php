@@ -245,7 +245,7 @@ class AuthenticationController extends BaseController
         // All good, redirect to main page
         $_SESSION['user']['active'] = '1';
         $_SESSION['user']['id'] = $row['id'];
-        $this->redirect();
+        return $this->redirect();
     }
 
     /**
