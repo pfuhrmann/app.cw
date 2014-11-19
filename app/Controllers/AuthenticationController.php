@@ -1,33 +1,13 @@
 <?php
 
-namespace COMP1687\CW;
+namespace COMP1687\CW\Controllers;
 
 use Gregwar\Captcha\CaptchaBuilder;
 use PDO;
 use Respect\Validation\Validator;
-use Twig_Environment;
 
-class AppController
+class AuthenticationController extends BaseController
 {
-    /**
-     * @var Twig_Environment
-     */
-    protected $twig;
-
-    /**
-     * @var PDO
-     */
-    protected $db;
-
-    /**
-     * @param Twig_Environment $twig
-     */
-    public function __construct(Twig_Environment $twig)
-    {
-        $this->twig = $twig;
-        $this->db = DatabaseManager::getInstance();
-    }
-
     /**
      * Index page
      * GET /
@@ -138,7 +118,7 @@ class AppController
         $_SESSION['user']['active'] = '0';
 
         // Redirect to verification page
-        header('Location: index.php?uri=verify');
+        return $this->redirect('verify');
     }
 
     /**
@@ -156,7 +136,7 @@ class AppController
         // Check if user actually needs verification
         if ($_SESSION['user']['active'] === '1') {
             // Activated already, redirect to main page
-            header('Location: ./');
+            return $this->redirect('./');
         }
 
         return $this->render('verify.html', [
@@ -203,7 +183,7 @@ class AppController
         $_SESSION['user']['active'] = '1';
 
         // Redirect to main page
-        header('Location: ./');
+        return $this->redirect('./');
     }
 
     /**
@@ -258,33 +238,21 @@ class AppController
         if (!($userValidator->validate($formData['username']))) {
             // Not active, redirect to verify
             $_SESSION['user']['active'] = '0';
-            header('Location: index.php?uri=verify');
-            die(); // This is necessary
+            return $this->redirect('verify');
         }
 
         // All good, redirect to main page
         $_SESSION['user']['active'] = '1';
-        header('Location: ./');
+        $this->redirect();
     }
 
     /**
-     * Logout user out of system
+     * Log user out of system
      */
     public function getLogout()
     {
         session_destroy();
-        header('Location: ./');
-    }
-
-    /**
-     * Render Twig template
-     *
-     * @param $template
-     */
-    private function render($template, $options)
-    {
-        $template = $this->twig->loadTemplate($template.'.twig');
-        echo $template->render($options);
+        return $this->redirect();
     }
 
     /**
