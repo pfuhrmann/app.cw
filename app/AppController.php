@@ -34,7 +34,7 @@ class AppController
      */
     public function getIndex()
     {
-        echo $this->render('index.html', []);
+        return $this->render('index.html', []);
     }
 
     /**
@@ -44,7 +44,7 @@ class AppController
     public function getRegistration()
     {
         $builder = $this->generateCaptcha();
-        echo $this->render('registration.html', [
+        return $this->render('registration.html', [
             'captcha' => $builder->inline()
         ]);
     }
@@ -120,16 +120,20 @@ class AppController
 
         // All good, create account
         $pass = password_hash($formData['password'], PASSWORD_BCRYPT);
-        $stmt = $this->db->prepare("INSERT INTO accounts (username, password, email) VALUES (?, ?, ?)");
+        $code = rand(10000, 99999);
+        $stmt = $this->db->prepare("INSERT INTO accounts (username, password, email, code) VALUES (?, ?, ?, ?)");
         $stmt->execute([
-            $formData['username'], $pass, $formData['email']
+            $formData['username'], $pass, $formData['email'], $code
         ]);
 
         // Send verification email
-        $code = $_SESSION['code'] = rand(10000, 99999);
         $subject = 'Confirm your sitter\'s account';
         $message = "Hello ".$formData['username']."! You activation code is: ".$code;
         mail($formData['email'], $subject, $message);
+
+        // Login user
+        $_SESSION['username'] = $formData['username'];
+        $_SESSION['email'] = $formData['email'];
 
         // Redirect to verification page
         header('Location: index.php?uri=verify');
@@ -141,11 +145,63 @@ class AppController
      */
     public function getVerify()
     {
-        if (empty($_SESSION['code'])) {
+        // Check if logged in
+        if (empty($_SESSION['username'])) {
+            header("HTTP/1.0 403 Forbidden");
             return "You are not authorized to access this page!";
         }
 
-        return $this->render('verify.html', []);
+        // Check if user actually needs verification
+        $stmt = $this->db->prepare("SELECT active FROM accounts WHERE username=? LIMIT 1");
+        $stmt->execute([$_SESSION['username']]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row['active'] === '1') {
+            // Activated already, redirect to main page
+            header('Location: /');
+        }
+
+        return $this->render('verify.html', [
+            'displayInfo' => true
+        ]);
+    }
+
+    /**
+     * Handle verification form
+     */
+    public function postVerify()
+    {
+        $formData = $_POST;
+        $errors = [];
+
+        // Get code for this user
+        $stmt = $this->db->prepare("SELECT code FROM accounts WHERE username=? LIMIT 1");
+        $stmt->execute([$_SESSION['username']]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Validate code
+        $codeValidator = Validator::equals($row['code'])->notEmpty();
+        try {
+            $codeValidator->assert($formData['code']);
+        } catch(\InvalidArgumentException $e) {
+            $errors['username'] = array_filter($e->findMessages([
+                'equals'   => '<strong>Code</strong> entered is invalid, please recheck your verification email',
+                'notEmpty' => 'Please provide activation <strong>code</strong>, which you received in the verification email',
+            ]));
+        }
+
+        // We get errors so display verify form again
+        if (!empty($errors)) {
+            return $this->render('verify.html', [
+                'errorsAll' => $errors,
+                'displayInfo' => false,
+            ]);
+        }
+
+        // All good, activate account
+        $stmt = $this->db->prepare("UPDATE accounts SET active = 1, code = ''");
+        $stmt->execute();
+
+        die('all good');
     }
 
     /**

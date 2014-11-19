@@ -24,6 +24,13 @@
                 {% endif %}
                 {% endautoescape %}
 
+                {# Display info #}
+                {% if displayInfo %}
+                    <div class="alert alert-warning">
+                        Congratulations, your sitter's account was successfully created! We have sent you activation code to your email address.
+                    </div>
+                {% endif %}
+
                 {# Verify form #}
                 <form class="form-horizontal" method="post" action="index.php?uri=verify">
                     <div class="form-group">
