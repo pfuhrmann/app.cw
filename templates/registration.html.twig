@@ -9,27 +9,43 @@
     </div>
     <div class="col-md-10 column">
         <div class="jumbotron">
+            {# Display errors #}
+            {% autoescape false %}
+            {% if not errorsAll is empty %}
+            <div class="alert alert-danger">
+                <ul>
+            {% for errors in errorsAll %}
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            {% endautoescape %}
+
+            {# Registration form #}
             <form class="form-horizontal" method="post" action="index.php?uri=registration">
                 <div class="form-group">
                     <label for="username" class="col-sm-2 control-label">Username</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="username" name="username" />
+                        <input type="text" class="form-control" id="username" name="username" value="{{ input.username }}" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="password" class="col-sm-2 control-label">Password</label>
                     <div class="col-sm-9">
-                        <input type="password" class="form-control" id="password" name="password" />
+                        <input type="password" class="form-control" id="password" name="password" value="{{ input.password }}" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="email" class="col-sm-2 control-label">Email</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="email" name="email" />
+                        <input type="text" class="form-control" id="email" name="email" value="{{ input.email }}" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="captcha" class="col-sm-2 control-label">Captcha</label>
+                    <label for="captcha" class="col-sm-2 control-label">CAPTCHA</label>
                     <div class="col-sm-3">
                         <img src="{{ captcha }}" alt="captcha" width="150" height="40" />
                     </div>
