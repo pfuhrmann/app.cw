@@ -120,10 +120,32 @@ class AppController
 
         // All good, create account
         $pass = password_hash($formData['password'], PASSWORD_BCRYPT);
-        $stmt = $this->db->prepare(" INSERT INTO accounts (username, password, email) VALUES (?, ?, ?)");
-        var_dump($stmt->execute([
+        $stmt = $this->db->prepare("INSERT INTO accounts (username, password, email) VALUES (?, ?, ?)");
+        $stmt->execute([
             $formData['username'], $pass, $formData['email']
-        ]));
+        ]);
+
+        // Send verification email
+        $code = $_SESSION['code'] = rand(10000, 99999);
+        $subject = 'Confirm your sitter\'s account';
+        $message = "Hello ".$formData['username']."! You activation code is: ".$code;
+        mail($formData['email'], $subject, $message);
+
+        // Redirect to verification page
+        header('Location: index.php?uri=verify');
+    }
+
+    /**
+     * Level 2 : Verify account : 12 marks
+     * GET verify
+     */
+    public function getVerify()
+    {
+        if (empty($_SESSION['code'])) {
+            return "You are not authorized to access this page!";
+        }
+
+        return $this->render('verify.html', []);
     }
 
     /**
