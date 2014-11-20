@@ -94,6 +94,61 @@ class ServicesController extends BaseController
     }
 
     /**
+     * Level 5 : Image upload : 10 marks
+     * GET addpicture
+     */
+    public function getAddpicture()
+    {
+        if (!$this->checkAuthentication()) {
+            return "You are not authorized to access this page!";
+        }
+
+        return $this->render('services/add-picture.html', []);
+    }
+
+    /**
+     * Handle add picture form
+     * POST addpicture
+     */
+    public function postAddpicture()
+    {
+        $formData = $_POST;
+        $errors = [];
+
+        // Validate picture title
+        $pictureTitleValidator = Validator::length(2, 15)->notEmpty();
+        try {
+            $pictureTitleValidator->assert($formData['title']);
+        } catch(\InvalidArgumentException $e) {
+            $errors['picture'] = array_filter($e->findMessages([
+                'length'       => '<strong>Picture title</strong> must be between 2 and 15 characters',
+                'notEmpty'     => '<strong>Picture title</strong> cannot be empty',
+            ]));
+        }
+
+        // Validate file
+        $fileValidator = Validator::notEmpty();
+        try {
+            $fileValidator->assert($formData['file']);
+        } catch(\InvalidArgumentException $e) {
+            $errors['file'] = array_filter($e->findMessages([
+                'length'       => '<strong>File</strong> must be between 2 and 15 characters',
+                'notEmpty'     => '<strong>File</strong> cannot be empty',
+            ]));
+        }
+
+        // We get errors so display form again
+        if (!empty($errors)) {
+            return $this->render('services/add-picture.html', [
+                'input'     => $formData,
+                'errorsAll' => $errors,
+            ]);
+        }
+
+        die('all good');
+    }
+
+    /**
      * @return array
      */
     private function getServiceDetails()
