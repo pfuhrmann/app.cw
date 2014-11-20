@@ -104,10 +104,11 @@ class AuthenticationController extends BaseController
         $stmt->execute([
             $formData['username'], $pass, $formData['email'], $code
         ]);
+        $user_id = $this->db->lastInsertId();
 
         // Create empty service in DB
         $stmt = $this->db->prepare("INSERT INTO service (account_id) VALUES (?)");
-        $stmt->execute([$this->db->lastInsertId()]);
+        $stmt->execute([$user_id]);
 
         // Send verification email
         $subject = 'Confirm your sitter\'s account';
@@ -118,6 +119,7 @@ class AuthenticationController extends BaseController
         $_SESSION['user']['username'] = $formData['username'];
         $_SESSION['user']['email'] = $formData['email'];
         $_SESSION['user']['active'] = '0';
+        $_SESSION['user']['id'] = $user_id;
 
         // Redirect to verification page
         return $this->redirect('verify');

@@ -8,6 +8,7 @@
         <h1>My Services</h1>
 
         <div class="jumbotron">
+            <h2>Service details</h2>
             <div class="row push-bottom">
                 <div class="col-sm-2">
                     <p><a class="btn btn-success btn-warning" href="index.php?uri=addservice">Update Details</a></p>
@@ -49,6 +50,15 @@
                     {% autoescape false %}
                     {{ service.details }}
                     {% endautoescape %}
+                </div>
+            </div>
+        </div>
+
+        <div class="jumbotron">
+            <h2>Your pictures</h2>
+            <div class="row push-bottom">
+                <div class="col-sm-2">
+                    <p><a class="btn btn-success btn-success" href="index.php?uri=addpicture">Add Picture</a></p>
                 </div>
             </div>
         </div>
