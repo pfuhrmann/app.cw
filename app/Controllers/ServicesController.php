@@ -2,6 +2,7 @@
 
 namespace COMP1687\CW\Controllers;
 
+use Gregwar\Image\Image;
 use PDO;
 use Respect\Validation\Validator;
 
@@ -17,10 +18,16 @@ class ServicesController extends BaseController
             return "You are not authorized to access this page!";
         }
 
+        // Get accounts images
+        $stmt = $this->db->prepare("SELECT * FROM image WHERE account_id=?");
+        $stmt->execute([$_SESSION['user']['id']]);
+        $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         $service = $this->getServiceDetails();
         $service['details'] = nl2br($service['details']);
         return $this->render('services/list.html', [
             'service' =>  $service,
+            'images' => $images,
         ]);
     }
 
@@ -121,20 +128,16 @@ class ServicesController extends BaseController
             $pictureTitleValidator->assert($formData['title']);
         } catch(\InvalidArgumentException $e) {
             $errors['picture'] = array_filter($e->findMessages([
-                'length'       => '<strong>Picture title</strong> must be between 2 and 15 characters',
-                'notEmpty'     => '<strong>Picture title</strong> cannot be empty',
+                'length'   => '<strong>Picture title</strong> must be between 2 and 15 characters',
+                'notEmpty' => '<strong>Picture title</strong> cannot be empty',
             ]));
         }
 
         // Validate file
-        $fileValidator = Validator::notEmpty();
-        try {
-            $fileValidator->assert($formData['file']);
-        } catch(\InvalidArgumentException $e) {
-            $errors['file'] = array_filter($e->findMessages([
-                'length'       => '<strong>File</strong> must be between 2 and 15 characters',
-                'notEmpty'     => '<strong>File</strong> cannot be empty',
-            ]));
+        if (empty($_FILES['file']['tmp_name'])) {
+            $errors['picture']['file']  = '<strong>File</strong> cannot be empty';
+        } else if (!getimagesize($_FILES['file']['tmp_name'])) {
+            $errors['picture']['file']  = '<strong>File</strong> is not an image';
         }
 
         // We get errors so display form again
@@ -145,7 +148,41 @@ class ServicesController extends BaseController
             ]);
         }
 
-        die('all good');
+        // Save file thumb
+        $name = md5($_FILES['file']['tmp_name']);
+        Image::open($_FILES['file']['tmp_name'])
+            ->resize(290, 190)
+            ->save('uploads/'.$name);
+
+        // Store image ref in DB
+        $stmt = $this->db->prepare("INSERT INTO image (account_id, alt, name) VALUES (?, ?, ?)");
+        $stmt->execute([
+            $_SESSION['user']['id'], $formData['title'], $name
+        ]);
+
+        return $this->redirect('services');
+    }
+
+    /**
+     * Delete picture
+     * GET deletepicture
+     */
+    public function getDeletepicture()
+    {
+        // Get images ref first
+        $stmt = $this->db->prepare("SELECT * FROM image WHERE account_id=? AND id=? LIMIT 1");
+        $stmt->execute([$_SESSION['user']['id'], $_GET['id']]);
+        $image = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Delete database record
+        $stmt = $this->db->prepare("DELETE FROM image WHERE account_id=? AND id=? LIMIT 1");
+        $stmt->execute([$_SESSION['user']['id'], $_GET['id']]);
+
+        // Delete file
+        if (isset($image['name']))
+        unlink('uploads/'.$image['name']);
+
+        return $this->redirect('services');
     }
 
     /**
