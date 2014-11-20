@@ -1,3 +1,5 @@
 .idea
 /assets/
 /vendor/
+uploads/
+cache/

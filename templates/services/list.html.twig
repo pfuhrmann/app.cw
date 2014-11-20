@@ -61,7 +61,29 @@
                     <p><a class="btn btn-success btn-success" href="index.php?uri=addpicture">Add Picture</a></p>
                 </div>
             </div>
+
+            {# Display pictures #}
+            <div class="row push-bottom">
+            {% if not images is empty %}
+                {% for image in images %}
+                <div class="col-sm-4 push-bottom push-top">
+                    <div class="pull-right">[ <a class="red" href="index.php?uri=deletepicture&#38;id={{ image.id }}" title="Delete image" id="imgdelete">X</a> ]</div>
+                    <img src="uploads/{{ image.name }}" alt="{{ image.alt }}" />
+                </div>
+                {% endfor %}
+            {% endif %}
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+    // Confirm image delete
+    $( "#imgdelete" ).click(function() {
+        var conf = confirm("Are you sure you want to delete this image?");
+        return conf;
+    });
+</script>
 {% endblock %}
