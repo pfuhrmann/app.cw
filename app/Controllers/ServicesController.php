@@ -149,7 +149,7 @@ class ServicesController extends BaseController
         }
 
         // Save file thumb
-        $name = md5($_FILES['file']['tmp_name']);
+        $name = md5($_FILES['file']['tmp_name'].time());
         Image::open($_FILES['file']['tmp_name'])
             ->resize(290, 190)
             ->save('uploads/'.$name);
