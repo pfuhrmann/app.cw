@@ -1,11 +1,11 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Update Post{% endblock %}
+{% block title %}Add New Post{% endblock %}
 
 {% block content %}
     <div class="row clearfix">
         <div class="col-md-10 column">
-            <h1>Update Post</h1>
+            <h1>Add New Post</h1>
 
             <div class="jumbotron">
                 {# Display errors #}
@@ -24,7 +24,7 @@
                 {% endautoescape %}
 
                 {# Service form #}
-                <form class="form-horizontal" method="post" action="index.php?uri=update-service&id={{ input.id }}">
+                <form class="form-horizontal" method="post" action="index.php?uri=add-service">
                     <div class="form-group">
                         <label for="business" class="col-sm-2 control-label">Business Name</label>
                         <div class="col-sm-9">
@@ -41,11 +41,11 @@
                         <label for="type" class="col-sm-2 control-label">Sitting Type</label>
                         <div class="col-sm-9">
                             <select class="form-control" name="type" id="type">
-                                <option value="Sitter">Sitter</option>
-                                <option value="Babysitter">Babysitter</option>
-                                <option value="Petsitter">Petsitter</option>
-                                <option value="Housesitter">Housesitter</option>
-                                <option value="Plantsitter">Plantsitter</option>
+                                <option value="sitter">Sitter</option>
+                                <option value="babysitter">Babysitter</option>
+                                <option value="petsitter">Petsitter</option>
+                                <option value="housesitter">Housesitter</option>
+                                <option value="plantsitter">Plantsitter</option>
                             </select>
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
-                            <p><button type="submit" class="btn btn-warning">Update Post</button></p>
+                            <p><button type="submit" class="btn btn-success">Add Post</button></p>
                         </div>
                     </div>
                 </form>
