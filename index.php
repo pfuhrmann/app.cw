@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+
 // Composer bootstrap
 require 'vendor/autoload.php';
 
@@ -11,8 +12,16 @@ $twig->addExtension(new COMP1687\CW\SessionTwigExtension());
 
 // Router bootstrap
 $router = new Phroute\RouteCollector();
+// Authorization filter
+$router->filter('auth', function() {
+    if (!isset($_SESSION['user']) || $_SESSION['user']['active'] !== '1') {
+        header("HTTP/1.0 403 Forbidden");
+
+        return "You are not authorized to access this page!";
+    }
+});
 $router->controller('/', new COMP1687\CW\Controllers\AuthenticationController($twig));
-$router->controller('/', new COMP1687\CW\Controllers\ServicesController($twig));
+$router->controller('/', new COMP1687\CW\Controllers\ServicesController($twig), ['before' => 'auth']);
 $dispatcher = new Phroute\Dispatcher($router);
 
 // This is hack for stuweb web server

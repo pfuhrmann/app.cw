@@ -8,6 +8,37 @@
         <h1>My Services</h1>
 
         <div class="jumbotron">
+            <h2>Posts</h2>
+            <div class="row push-bottom">
+                <div class="col-sm-2">
+                    <p><a class="btn btn-success btn-success" href="index.php?uri=addservice">Add Post</a></p>
+                </div>
+            </div>
+
+            {# Display posts #}
+            <div class="row push-bottom">
+                <table class="table">
+                <thead>
+                    <tr><th>ID</th><th>Name</th><th>Type</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                {% for post in posts %}
+                    <tr>
+                        <td>{{ post.id }}</td>
+                        <td>{{ post.business }}</td>
+                        <td>{{ post.type }}</td>
+                        <td>
+                            <a href="index.php?uri=updateservice" title="Update post" class="btn btn-sm btn-warning">Update</a>
+                            <a href="index.php?uri=deleteservice" title="Delete post" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="jumbotron">
             <h2>Service details</h2>
             <div class="row push-bottom">
                 <div class="col-sm-2">
