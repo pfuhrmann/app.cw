@@ -19,76 +19,100 @@ class ServicesController extends BaseController
         $stmt->execute([$_SESSION['user']['id']]);
         $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Get accounts images
+        // Get post images
         $stmt = $this->db->prepare("SELECT * FROM image WHERE account_id=?");
         $stmt->execute([$_SESSION['user']['id']]);
         $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $service = $this->getServiceDetails();
-        $service['details'] = nl2br($service['details']);
         return $this->render('services/list.html', [
-            'service' =>  $service,
             'images' => $images,
             'posts' => $posts,
         ]);
     }
 
     /**
-     * Add new service
-     * GET addservice
+     * View service details
+     * GET service-details
      */
-    public function getAddservice()
+    public function getServiceDetails()
     {
-        return $this->render('services/update.html', [
-            'input' => $this->getServiceDetails(),
+        $serviceID = $_GET['id'];
+
+        return $this->render('services/view.html', [
+            'service' => $this->getServiceData($serviceID),
         ]);
     }
 
     /**
-     * Handle update service form
-     * POST addservice
+     * Add new service form
+     * GET add-service
      */
-    public function postAddservice()
+    public function getAddService()
+    {
+        return $this->render('services/add.html', []);
+    }
+
+    /**
+     * Handle add service form
+     * POST add-service
+     */
+    public function postAddService()
     {
         $formData = $_POST;
-        $errors = [];
-
-        // Validate business name
-        $businessNameValidator = Validator::length(3, 30);
-        try {
-            $businessNameValidator->assert($formData['business']);
-        } catch(\InvalidArgumentException $e) {
-            $errors['business'] = array_filter($e->findMessages([
-                'length'       => '<strong>Business name</strong> must be between 3 and 30 characters',
-                //'notEmpty'     => '<strong>Business name</strong> cannot be empty',
-            ]));
-        }
-
-        // Validate postcode
-        $postcodeValidator = Validator::alnum()->length(3, 9)->postcode();
-        try {
-            $postcodeValidator->assert($formData['postcode']);
-        } catch(\InvalidArgumentException $e) {
-            $errors['postcode'] = array_filter($e->findMessages([
-                'alnum'        => '<strong>Postcode</strong> must contain only letters and digits',
-                'length'       => '<strong>Postcode</strong> must be between 5 and 9 characters',
-                //'notEmpty'     => '<strong>Postcode</strong> cannot be empty',
-                'postcode'     => '<strong>Postcode</strong> is invalid. Only Royal Borought of Greenwich districts are allowed. Example: SE10 9ED',
-            ]));
-        }
+        $errors = $this->validateServiceDetails($formData);
 
         // We get errors so display form again
         if (!empty($errors)) {
-            return $this->render('services/update.html', [
+            return $this->render('services/add.html', [
                 'input'     => $formData,
                 'errorsAll' => $errors,
             ]);
         }
 
         // All good, create service in DB
-        $stmt = $this->db->prepare("UPDATE service SET business=?, postcode=?, type=?, details=? WHERE account_id=?");
+        $stmt = $this->db->prepare("INSERT INTO service(account_id, business, postcode, type, details) VALUES(?, ?, ?, ?, ?)");
         $stmt->execute([
-            $formData['business'], $formData['postcode'], $formData['type'], $formData['details'], $_SESSION['user']['id']
+            $_SESSION['user']['id'], $formData['business'], $formData['postcode'], $formData['type'], $formData['details']
+        ]);
+
+        return $this->redirect('services');
+    }
+
+    /**
+     * Update service form
+     * GET update-service
+     */
+    public function getUpdateService()
+    {
+        $serviceID = $_GET['id'];
+
+        return $this->render('services/update.html', [
+            'input' => $this->getServiceData($serviceID),
+        ]);
+    }
+
+    /**
+     * Handle update service form
+     * POST update-service
+     */
+    public function postUpdateService()
+    {
+        $serviceID = $_GET['id'];
+        $formData = $_POST;
+        $errors = $this->validateServiceDetails($formData);
+
+        // We get errors so display form again
+        if (!empty($errors)) {
+            return $this->render('services/add.html', [
+                'input'     => $formData,
+                'errorsAll' => $errors,
+            ]);
+        }
+
+        // All good, update service in DB
+        $stmt = $this->db->prepare("UPDATE service SET business=?, postcode=?, type=?, details=? WHERE ID=? AND account_id=?");
+        $stmt->execute([
+            $formData['business'], $formData['postcode'], $formData['type'], $formData['details'], $serviceID, $_SESSION['user']['id']
         ]);
 
         return $this->redirect('services');
@@ -98,7 +122,7 @@ class ServicesController extends BaseController
      * Level 5 : Image upload : 10 marks
      * GET addpicture
      */
-    public function getAddpicture()
+    public function getAddPicture()
     {
         return $this->render('services/add-picture.html', []);
     }
@@ -107,7 +131,7 @@ class ServicesController extends BaseController
      * Handle add picture form
      * POST addpicture
      */
-    public function postAddpicture()
+    public function postAddPicture()
     {
         $formData = $_POST;
         $errors = [];
@@ -157,7 +181,7 @@ class ServicesController extends BaseController
      * Delete picture
      * GET deletepicture
      */
-    public function getDeletepicture()
+    public function getDeletePicture()
     {
         // Get images ref first
         $stmt = $this->db->prepare("SELECT * FROM image WHERE account_id=? AND id=? LIMIT 1");
@@ -178,12 +202,45 @@ class ServicesController extends BaseController
     /**
      * @return array
      */
-    private function getServiceDetails()
+    private function getServiceData($serviceID)
     {
-        $stmt = $this->db->prepare("SELECT * FROM service WHERE account_id=? LIMIT 1");
-        $stmt->execute([$_SESSION['user']['id']]);
+        $stmt = $this->db->prepare("SELECT * FROM service WHERE id=? AND account_id=? LIMIT 1");
+        $stmt->execute([$serviceID, $_SESSION['user']['id']]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $row;
+    }
+
+    /**
+     * @param $data
+     * @return mixed
+     */
+    private function validateServiceDetails($data)
+    {
+        // Validate business name
+        $businessNameValidator = Validator::length(3, 30);
+        try {
+            $businessNameValidator->assert($data['business']);
+        } catch(\InvalidArgumentException $e) {
+            $errors['business'] = array_filter($e->findMessages([
+                'length'       => '<strong>Business name</strong> must be between 3 and 30 characters',
+                'notEmpty'     => '<strong>Business name</strong> cannot be empty',
+            ]));
+        }
+
+        // Validate postcode
+        $postcodeValidator = Validator::alnum()->length(3, 9)->postcode();
+        try {
+            $postcodeValidator->assert($data['postcode']);
+        } catch(\InvalidArgumentException $e) {
+            $errors['postcode'] = array_filter($e->findMessages([
+                'alnum'        => '<strong>Postcode</strong> must contain only letters and digits',
+                'length'       => '<strong>Postcode</strong> must be between 5 and 9 characters',
+                'notEmpty'     => '<strong>Postcode</strong> cannot be empty',
+                'postcode'     => '<strong>Postcode</strong> is invalid. Only Royal Borought of Greenwich districts are allowed. Example: SE10 9ED',
+            ]));
+        }
+
+        return $errors;
     }
 }

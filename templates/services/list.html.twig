@@ -11,7 +11,7 @@
             <h2>Posts</h2>
             <div class="row push-bottom">
                 <div class="col-sm-2">
-                    <p><a class="btn btn-success btn-success" href="index.php?uri=addservice">Add Post</a></p>
+                    <p><a class="btn btn-success btn-success" href="index.php?uri=add-service">Add Post</a></p>
                 </div>
             </div>
 
@@ -28,8 +28,9 @@
                         <td>{{ post.business }}</td>
                         <td>{{ post.type }}</td>
                         <td>
-                            <a href="index.php?uri=updateservice" title="Update post" class="btn btn-sm btn-warning">Update</a>
-                            <a href="index.php?uri=deleteservice" title="Delete post" class="btn btn-sm btn-danger">Delete</a>
+                            <a href="index.php?uri=service-details&id={{ post.id }}" title="View post" class="btn btn-sm btn-info">View</a>
+                            <a href="index.php?uri=update-service&id={{ post.id }}" title="Update post" class="btn btn-sm btn-warning">Update</a>
+                            <a href="index.php?uri=delete-service&id={{ post.id }}" title="Delete post" class="btn btn-sm btn-danger">Delete</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -39,57 +40,10 @@
         </div>
 
         <div class="jumbotron">
-            <h2>Service details</h2>
-            <div class="row push-bottom">
-                <div class="col-sm-2">
-                    <p><a class="btn btn-success btn-warning" href="index.php?uri=addservice">Update Details</a></p>
-                </div>
-            </div>
-
-            <div class="row push-bottom">
-                <div class="col-sm-2">
-                    <strong>Business:</strong>
-                </div>
-                <div class="col-sm-7">
-                    {{ service.business }}
-                </div>
-            </div>
-
-            <div class="row push-bottom">
-                <div class="col-sm-2">
-                    <strong>Postcode:</strong>
-                </div>
-                <div class="col-sm-7">
-                    {{ service.postcode }}
-                </div>
-            </div>
-
-            <div class="row push-bottom">
-                <div class="col-sm-2">
-                    <strong>Type:</strong>
-                </div>
-                <div class="col-sm-7">
-                    {{ service.type }}
-                </div>
-            </div>
-
-            <div class="row push-bottom">
-                <div class="col-sm-2">
-                    <strong>Details:</strong>
-                </div>
-                <div class="col-sm-7">
-                    {% autoescape false %}
-                    {{ service.details }}
-                    {% endautoescape %}
-                </div>
-            </div>
-        </div>
-
-        <div class="jumbotron">
             <h2>Your pictures</h2>
             <div class="row push-bottom">
                 <div class="col-sm-2">
-                    <p><a class="btn btn-success btn-success" href="index.php?uri=addpicture">Add Picture</a></p>
+                    <p><a class="btn btn-success btn-success" href="index.php?uri=add-picture">Add Picture</a></p>
                 </div>
             </div>
 
