@@ -2,6 +2,10 @@
 
 namespace COMP1687\CW;
 
+/**
+ * Insert user session to Twig globals
+ *  so we can access anywhere in the template
+ */
 class SessionTwigExtension extends \Twig_Extension
 {
     public function getName()

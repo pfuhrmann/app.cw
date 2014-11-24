@@ -14,9 +14,10 @@ class ServicesController extends BaseController
      */
     public function getServices()
     {
-        if (!$this->checkAuthentication()) {
-            return "You are not authorized to access this page!";
-        }
+        // Get accounts posts
+        $stmt = $this->db->prepare("SELECT * FROM service WHERE account_id=?");
+        $stmt->execute([$_SESSION['user']['id']]);
+        $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Get accounts images
         $stmt = $this->db->prepare("SELECT * FROM image WHERE account_id=?");
@@ -28,6 +29,7 @@ class ServicesController extends BaseController
         return $this->render('services/list.html', [
             'service' =>  $service,
             'images' => $images,
+            'posts' => $posts,
         ]);
     }
 
@@ -37,10 +39,6 @@ class ServicesController extends BaseController
      */
     public function getAddservice()
     {
-        if (!$this->checkAuthentication()) {
-            return "You are not authorized to access this page!";
-        }
-
         return $this->render('services/update.html', [
             'input' => $this->getServiceDetails(),
         ]);
@@ -52,10 +50,6 @@ class ServicesController extends BaseController
      */
     public function postAddservice()
     {
-        if (!$this->checkAuthentication()) {
-            return "You are not authorized to access this page!";
-        }
-
         $formData = $_POST;
         $errors = [];
 
@@ -106,10 +100,6 @@ class ServicesController extends BaseController
      */
     public function getAddpicture()
     {
-        if (!$this->checkAuthentication()) {
-            return "You are not authorized to access this page!";
-        }
-
         return $this->render('services/add-picture.html', []);
     }
 
