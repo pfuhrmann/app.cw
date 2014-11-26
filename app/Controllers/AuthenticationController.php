@@ -6,6 +6,9 @@ use Gregwar\Captcha\CaptchaBuilder;
 use PDO;
 use Respect\Validation\Validator;
 
+/**
+ * All the authentication functionality
+ */
 class AuthenticationController extends BaseController
 {
     /**

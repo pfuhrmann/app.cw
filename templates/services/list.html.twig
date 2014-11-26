@@ -19,18 +19,19 @@
             <div class="row push-bottom">
                 <table class="table">
                 <thead>
-                    <tr><th>ID</th><th>Name</th><th>Type</th><th>Action</th></tr>
+                    <tr><th>ID</th><th>Name</th><th>Postcode</th><th>Type</th><th>Action</th></tr>
                 </thead>
                 <tbody>
                 {% for post in posts %}
                     <tr>
                         <td>{{ post.id }}</td>
                         <td>{{ post.business }}</td>
+                        <td>{{ post.postcode }}</td>
                         <td>{{ post.type }}</td>
                         <td>
-                            <a href="index.php?uri=service-details&id={{ post.id }}" title="View post" class="btn btn-sm btn-info">View</a>
-                            <a href="index.php?uri=update-service&id={{ post.id }}" title="Update post" class="btn btn-sm btn-warning">Update</a>
-                            <a href="index.php?uri=delete-service&id={{ post.id }}" title="Delete post" class="btn btn-sm btn-danger">Delete</a>
+                            <a href="index.php?uri=service-details&#38;id={{ post.id }}" title="View post" class="btn btn-sm btn-info">View</a>
+                            <a href="index.php?uri=update-service&#38;id={{ post.id }}" title="Update post" class="btn btn-sm btn-warning">Update</a>
+                            <a href="index.php?uri=delete-service&#38;id={{ post.id }}" title="Delete post" class="service btn btn-sm btn-danger">Delete</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -52,7 +53,7 @@
             {% if not images is empty %}
                 {% for image in images %}
                 <div class="col-sm-4 push-bottom push-top">
-                    <div class="pull-right">[ <a class="red" href="index.php?uri=deletepicture&#38;id={{ image.id }}" title="Delete image" id="imgdelete">X</a> ]</div>
+                    <div class="pull-right">[ <a class="red" href="index.php?uri=delete-picture&#38;id={{ image.id }}" title="Delete image" id="imgdelete">X</a> ]</div>
                     <img src="uploads/{{ image.name }}" alt="{{ image.alt }}" />
                 </div>
                 {% endfor %}
@@ -65,7 +66,13 @@
 
 {% block javascript %}
 <script type="text/javascript">
-    // Confirm image delete
+    // Confirm service deletion
+    $(".service").click(function() {
+        var conf = confirm("Are you sure you want to delete this post?");
+        return conf;
+    });
+
+    // Confirm image deletion
     $(".red").click(function() {
         var conf = confirm("Are you sure you want to delete this image?");
         return conf;

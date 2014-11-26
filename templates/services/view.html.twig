@@ -10,10 +10,10 @@
             <div class="jumbotron">
                 <div class="row push-bottom">
                     <div class="col-sm-2">
-                        <p><a class="btn btn-success btn-warning" href="index.php?uri=update-service&id={{ service.id }}">Update Post</a></p>
+                        <p><a class="btn btn-success btn-warning" href="index.php?uri=update-service&#38;id={{ service.id }}">Update Post</a></p>
                     </div>
                     <div class="col-sm-1">
-                        <p><a class="btn btn-success btn-danger" href="index.php?uri=delete-service&id={{ service.id }}">Delete Post</a></p>
+                        <p><a class="btn btn-success btn-danger" href="index.php?uri=delete-service&#38;id={{ service.id }}" id="delete">Delete Post</a></p>
                     </div>
                 </div>
 
@@ -62,7 +62,7 @@
 {% block javascript %}
     <script type="text/javascript">
         // Confirm service delete
-        $(".red").click(function() {
+        $("#delete").click(function() {
             var conf = confirm("Are you sure you want to delete this service?");
             return conf;
         });

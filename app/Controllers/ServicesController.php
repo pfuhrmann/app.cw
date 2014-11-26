@@ -6,6 +6,9 @@ use Gregwar\Image\Image;
 use PDO;
 use Respect\Validation\Validator;
 
+/**
+ * Handles Service and Image CRUD functions
+ */
 class ServicesController extends BaseController
 {
     /**
@@ -37,9 +40,11 @@ class ServicesController extends BaseController
     public function getServiceDetails()
     {
         $serviceID = $_GET['id'];
+        $service = $this->getServiceData($serviceID);
+        $service['details'] = nl2br($service['details']);
 
         return $this->render('services/view.html', [
-            'service' => $this->getServiceData($serviceID),
+            'service' => $service,
         ]);
     }
 
@@ -119,8 +124,23 @@ class ServicesController extends BaseController
     }
 
     /**
+     * Delete service
+     * GET delete-service
+     */
+    public function getDeleteService()
+    {
+        $serviceID = $_GET['id'];
+
+        // Delete database record
+        $stmt = $this->db->prepare("DELETE FROM service WHERE account_id=? AND id=? LIMIT 1");
+        $stmt->execute([$_SESSION['user']['id'], $serviceID]);
+
+        return $this->redirect('services');
+    }
+
+    /**
      * Level 5 : Image upload : 10 marks
-     * GET addpicture
+     * GET add-picture
      */
     public function getAddPicture()
     {
@@ -129,7 +149,7 @@ class ServicesController extends BaseController
 
     /**
      * Handle add picture form
-     * POST addpicture
+     * POST add-picture
      */
     public function postAddPicture()
     {
@@ -179,7 +199,7 @@ class ServicesController extends BaseController
 
     /**
      * Delete picture
-     * GET deletepicture
+     * GET delete-picture
      */
     public function getDeletePicture()
     {
@@ -217,8 +237,10 @@ class ServicesController extends BaseController
      */
     private function validateServiceDetails($data)
     {
+        $errors = [];
+
         // Validate business name
-        $businessNameValidator = Validator::length(3, 30);
+        $businessNameValidator = Validator::length(3, 30)->notEmpty();
         try {
             $businessNameValidator->assert($data['business']);
         } catch(\InvalidArgumentException $e) {
@@ -229,7 +251,7 @@ class ServicesController extends BaseController
         }
 
         // Validate postcode
-        $postcodeValidator = Validator::alnum()->length(3, 9)->postcode();
+        $postcodeValidator = Validator::alnum()->length(3, 9)->postcode()->notEmpty();
         try {
             $postcodeValidator->assert($data['postcode']);
         } catch(\InvalidArgumentException $e) {
