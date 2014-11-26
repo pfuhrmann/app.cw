@@ -1,0 +1,52 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Service Details{% endblock %}
+
+{% block content %}
+<div class="row clearfix">
+    <div class="col-md-10 column">
+        <h1>Service Details</h1>
+
+        <div class="jumbotron">
+            <div class="row push-bottom">
+                <div class="col-sm-2">
+                    <strong>Service Name:</strong>
+                </div>
+                <div class="col-sm-7">
+                    {{ service.business }}
+                </div>
+            </div>
+
+            <div class="row push-bottom">
+                <div class="col-sm-2">
+                    <strong>Postcode:</strong>
+                </div>
+                <div class="col-sm-7">
+                    {{ service.postcode }}
+                </div>
+            </div>
+
+            <div class="row push-bottom">
+                <div class="col-sm-2">
+                    <strong>Type:</strong>
+                </div>
+                <div class="col-sm-7">
+                    {{ service.type }}
+                </div>
+            </div>
+
+            <div class="row push-bottom">
+                <div class="col-sm-2">
+                    <strong>Details:</strong>
+                </div>
+                <div class="col-sm-7">
+                    {% autoescape false %}
+                    {{ service.details }}
+                    {% endautoescape %}
+                </div>
+            </div>
+        </div>
+        <p><a href="index.php?uri=search" title="Back to search" class="btn btn-sm btn-primary">Go Back To Search</a></p>
+    </div>
+</div>
+{% endblock %}
