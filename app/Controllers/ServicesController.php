@@ -35,9 +35,9 @@ class ServicesController extends BaseController
 
     /**
      * View service details
-     * GET service-details
+     * GET post-details
      */
-    public function getServiceDetails()
+    public function getPostDetails()
     {
         $serviceID = $_GET['id'];
         $service = $this->getServiceData($serviceID);

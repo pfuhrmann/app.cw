@@ -22,6 +22,7 @@ $router->filter('auth', function() {
 });
 $router->controller('/', new COMP1687\CW\Controllers\AuthenticationController($twig));
 $router->controller('/', new COMP1687\CW\Controllers\ServicesController($twig), ['before' => 'auth']);
+$router->controller('/', new COMP1687\CW\Controllers\SearchController($twig));
 $dispatcher = new Phroute\Dispatcher($router);
 
 // This is hack for stuweb web server
