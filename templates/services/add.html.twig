@@ -41,11 +41,11 @@
                         <label for="type" class="col-sm-2 control-label">Sitting Type</label>
                         <div class="col-sm-9">
                             <select class="form-control" name="type" id="type">
-                                <option value="sitter">Sitter</option>
-                                <option value="babysitter">Babysitter</option>
-                                <option value="petsitter">Petsitter</option>
-                                <option value="housesitter">Housesitter</option>
-                                <option value="plantsitter">Plantsitter</option>
+                                <option value="Sitter" {% if input.type == 'Sitter' %}selected="selected"{% endif %}>Sitter</option>
+                                <option value="Babysitter" {% if input.type == 'Babysitter' %}selected="selected"{% endif %}>Babysitter</option>
+                                <option value="Petsitter" {% if input.type == 'Petsitter' %}selected="selected"{% endif %}>Petsitter</option>
+                                <option value="Housesitter" {% if input.type == 'Housesitter' %}selected="selected"{% endif %}>Housesitter</option>
+                                <option value="Plantsitter" {% if input.type == 'Plantsitter' %}selected="selected"{% endif %}>Plantsitter</option>
                             </select>
                         </div>
                     </div>
