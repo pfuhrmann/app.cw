@@ -3,6 +3,7 @@
 namespace COMP1687\CW\Controllers;
 
 use PDO;
+use Respect\Validation\Validator;
 
 /**
  * Handles Service search function
@@ -24,21 +25,62 @@ class SearchController extends BaseController
      */
     public function postSearch()
     {
-        $searchType = ($_GET['by'] === 'postcode') ? 'postcode' : 'type';
         $formData = $_POST;
+        var_dump($formData);
+
+        // Get search type
+        if (isset($formData['by-type'])) {
+            $searchType = 'type';
+        } elseif (isset($formData['by-postcode'])) {
+            $searchType = 'postcode';
+        } else {
+            $searchType = $formData['search-type'];
+        }
+        $formData['searchType'] = $searchType;
+        $imageOnly = (isset($formData['imageonly']) && $formData['imageonly'] === 'on') ? true : false;
 
         // Search by sitter type
         if ($searchType === 'type') {
-            $stmt = $this->db->prepare("SELECT * FROM service WHERE type=?");
+            $formData['postcode'] = '';
+
+            // Search for only posts with images
+            if ($imageOnly) {
+                $query = "SELECT s.*, COUNT(i.id) as imagecount FROM service s
+                          INNER JOIN account a ON s.account_id=a.id
+                          INNER JOIN image i ON a.id=i.account_id
+                          WHERE s.type=?
+                          GROUP BY s.id
+                          HAVING imagecount > 0";
+                $stmt = $this->db->prepare($query);
+            } else {
+                $stmt = $this->db->prepare("SELECT * FROM service WHERE type=?");
+            }
             $stmt->execute([$formData['type']]);
             $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Search by postcode
+        } else if ($searchType === 'postcode') {
+            $formData['type'] = '';
+
+            // Validate postcode
+            $postcodeValidator = Validator::alnum()->length(3, 9)->postcode()->notEmpty();
+            try {
+                $postcodeValidator->assert($formData['postcode']);
+            } catch(\InvalidArgumentException $e) {
+                $errors['postcode'] = array_filter($e->findMessages([
+                    'alnum'        => '<strong>Postcode</strong> must contain only letters and digits',
+                    'length'       => '<strong>Postcode</strong> must be between 5 and 9 characters',
+                    'notEmpty'     => '<strong>Postcode</strong> cannot be empty',
+                    'postcode'     => '<strong>Postcode</strong> is invalid. Only Royal Borought of Greenwich districts are allowed. Example: SE10 9ED',
+                ]));
+            }
         }
 
-        // Search by postcode
-        if ($searchType === 'postcode') {
-            $stmt = $this->db->prepare("SELECT * FROM service WHERE type=?");
-            $stmt->execute([$formData['type']]);
-            $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // We get errors so display form again
+        if (!empty($errors)) {
+            return $this->render('services/search.html', [
+                'input'     => $formData,
+                'errorsAll' => $errors,
+            ]);
         }
 
         return $this->render('services/search.html', [
@@ -61,8 +103,14 @@ class SearchController extends BaseController
         $service = $stmt->fetch(PDO::FETCH_ASSOC);
         $service['details'] = nl2br($service['details']);
 
+        // Get sitter's images
+        $stmt = $this->db->prepare("SELECT * FROM image WHERE account_id=?");
+        $stmt->execute([$service['account_id']]);
+        $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         return $this->render('services/view-search.html', [
             'service' => $service,
+            'images' => $images,
         ]);
     }
 }

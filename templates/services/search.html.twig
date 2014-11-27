@@ -5,14 +5,29 @@
 {% block content %}
 <div class="row clearfix">
     <div class="col-md-10 column">
-        <h1>Search</h1>
+        <form class="form-inline" method="post" action="index.php?uri=search">
+            <h1>Search</h1>
 
-        <div class="jumbotron">
-            <p class="push-top">Please select method of search</p>
+            <div class="jumbotron">
+                {# Display errors #}
+                {% autoescape false %}
+                {% if not errorsAll is empty %}
+                    <div class="alert alert-danger">
+                        <ul>
+                            {% for errors in errorsAll %}
+                                {% for error in errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% endautoescape %}
 
-            {# Search by sitter type #}
-            <div class="row push-top">
-                <form class="form-inline" method="post" action="index.php?uri=search&by=type">
+                <p class="push-top">Please select method of search</p>
+
+                {# Search by sitter type #}
+                <div class="row push-top">
                     <div class="form-group">
                         <label for="type" class="col-sm-6 control-label">By Sitter Type</label>
                         <div class="col-sm-6">
@@ -25,51 +40,69 @@
                             </select>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-success">Search</button>
-                </form>
-            </div>
+                    <button type="submit" class="btn btn-success" name="by-type">Search</button>
+                </div>
 
-            {# Search by postcode #}
-            <div class="row">
-                <form class="form-inline" method="post" action="index.php?uri=search&by=postcode">
+                {# Search by postcode #}
+                <div class="row">
                     <div class="form-group">
                         <label for="postcode" class="col-sm-6 control-label">By Postcode</label>
                         <div class="col-sm-6">
                             <input type="text" size="11" class="form-control" id="postcode" name="postcode" value="{{ input.postcode }}" />
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-success">Search</button>
-                </form>
+                    <button type="submit" class="btn btn-success" name="by-postcode">Search</button>
+                </div>
             </div>
-        </div>
 
-        {# Display search results #}
-        {% if not posts is empty %}
-        <div class="jumbotron">
-            <h2>Search Results</h2>
+            {# Display search results #}
+            {% if not input.searchType is empty and errorsAll is empty %}
+            <div class="jumbotron">
+                <h2>Search Results</h2>
+                <strong>Criteria:</strong>
+                    {% if input.searchType == 'type' %}Type = {{ input.type }}{% endif %}
+                    {% if input.searchType == 'postcode' %}Postcode = {{ input.postcode }}{% endif %}
 
-            <div class="row push-bottom">
-                <table class="table">
-                    <thead>
-                    <tr><th>Image</th><th>Name</th><th>Postcode</th><th>Type</th><th>Details</th></tr>
-                    </thead>
-                    <tbody>
-                    {% for post in posts %}
-                        <tr>
-                            <td>{{ post.id }}</td>
-                            <td>{{ post.business }}</td>
-                            <td>{{ post.postcode }}</td>
-                            <td>{{ post.type }}</td>
-                            <td>
-                                <a href="index.php?uri=service-details&#38;id={{ post.id }}" title="View service details" class="btn btn-sm btn-info">Details</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                {% if not posts is empty %}
+                <hr />
+                {# Filter With Image Only #}
+                <div class="row push-bottom push-top">
+                    <div class="form-group">
+                        <label for="postcode" class="col-sm-8 control-label">Only With Image</label>
+                        <input type="checkbox" class="form-control" id="imageonly" name="imageonly"{% if input.imageonly == 'on' %} checked="checked"{% endif %} />
+                        <input type="hidden" name="search-type" value="{{ input.searchType }}" />
+                    </div>
+                    <button type="submit" class="btn btn-success btn-sm">Filter</button>
+                </div>
+
+                <div class="row push-bottom">
+                    <table class="table">
+                        <thead>
+                        <tr><th>Image</th><th>Name</th><th>Postcode</th><th>Type</th><th>Details</th></tr>
+                        </thead>
+                        <tbody>
+                        {% for post in posts %}
+                            <tr>
+                                <td>{{ post.id }}</td>
+                                <td>{{ post.business }}</td>
+                                <td>{{ post.postcode }}</td>
+                                <td>{{ post.type }}</td>
+                                <td>
+                                    <a href="index.php?uri=service-details&#38;id={{ post.id }}" title="View service details" class="btn btn-sm btn-info">Details</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="clearfix push-bottom">
+                    <p class="red"><strong>No results found, please refine your search.</strong></p>
+                </div>
+                {% endif %}
             </div>
-        </div>
-        {% endif %}
+            {% endif %}
+        </form>
     </div>
 </div>
 {% endblock %}
