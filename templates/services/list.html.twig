@@ -54,7 +54,7 @@
                 {% for image in images %}
                 <div class="col-sm-4 push-bottom push-top">
                     <div class="pull-right">[ <a class="red" href="index.php?uri=delete-picture&#38;id={{ image.id }}" title="Delete image" id="imgdelete">X</a> ]</div>
-                    <img src="uploads/{{ image.name }}" alt="{{ image.alt }}" />
+                    <img src="uploads/{{ image.name }}_large" alt="{{ image.alt }}" />
                 </div>
                 {% endfor %}
             {% endif %}

@@ -40,7 +40,7 @@
                             </select>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-success" name="by-type">Search</button>
+                    <button type="submit" class="btn btn-primary" name="by-type">Search</button>
                 </div>
 
                 {# Search by postcode #}
@@ -51,7 +51,7 @@
                             <input type="text" size="11" class="form-control" id="postcode" name="postcode" value="{{ input.postcode }}" />
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-success" name="by-postcode">Search</button>
+                    <button type="submit" class="btn btn-primary" name="by-postcode">Search</button>
                 </div>
             </div>
 
@@ -72,7 +72,7 @@
                         <input type="checkbox" class="form-control" id="imageonly" name="imageonly"{% if input.imageonly == 'on' %} checked="checked"{% endif %} />
                         <input type="hidden" name="search-type" value="{{ input.searchType }}" />
                     </div>
-                    <button type="submit" class="btn btn-success btn-sm">Filter</button>
+                    <button type="submit" class="btn btn-warning btn-sm">Filter</button>
                 </div>
 
                 <div class="row push-bottom">
