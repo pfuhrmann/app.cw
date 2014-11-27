@@ -7,7 +7,8 @@
         "gregwar/captcha": "~1.0",
         "gregwar/image": "~2.0",
         "respect/validation": "~0.6",
-        "ircmaxell/password-compat": "~1.0"
+        "ircmaxell/password-compat": "~1.0",
+        "kilte/pagination": "~1.1"
 },
     "license": "private",
     "authors": [
