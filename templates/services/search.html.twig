@@ -63,8 +63,6 @@
                     {% if input.searchType == 'type' %}Type = {{ input.type }}{% endif %}
                     {% if input.searchType == 'postcode' %}Postcode = {{ input.postcode }}{% endif %}
 
-                {% if not posts is empty %}
-                <hr />
                 {# Filter With Image Only #}
                 <div class="row push-bottom push-top">
                     <div class="form-group">
@@ -74,6 +72,9 @@
                     </div>
                     <button type="submit" class="btn btn-warning btn-sm">Filter</button>
                 </div>
+
+                {% if not posts is empty %}
+                <hr />
 
                 <div class="row push-bottom">
                     <table class="table">

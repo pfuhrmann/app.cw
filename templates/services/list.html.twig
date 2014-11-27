@@ -16,6 +16,7 @@
             </div>
 
             {# Display posts #}
+            {% if not posts is empty %}
             <div class="row push-bottom">
                 <table class="table">
                 <thead>
@@ -38,6 +39,7 @@
                 </tbody>
                 </table>
             </div>
+            {% endif %}
         </div>
 
         <div class="jumbotron">
