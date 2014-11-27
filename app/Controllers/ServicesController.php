@@ -196,13 +196,18 @@ class ServicesController extends BaseController
             ->resize(120, 120)
             ->save('uploads/'.$name.'_small');
 
-        // Store image ref in DB
-        $default = ($formData['default'] === 'on');
+        // Get image count for this user
+        $stmt = $this->db->prepare("SELECT COUNT(id) AS count FROM image WHERE account_id=?");
+        $stmt->execute([$_SESSION['user']['id']]);
+        $imageCount = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+        // Default if selected or if first picture
+        $default = ($formData['default'] === 'on' || $imageCount === "0");
         if ($default) {
             // New default image update old default (if any)
             $stmt = $this->db->prepare("UPDATE image SET defaultimg=0 WHERE account_id=? AND defaultimg=1 LIMIT 1");
             $stmt->execute([$_SESSION['user']['id']]);
         }
+        // Store image ref in DB
         $stmt = $this->db->prepare("INSERT INTO image (account_id, alt, name, defaultimg) VALUES (?, ?, ?, ?)");
         $stmt->execute([
             $_SESSION['user']['id'], $formData['title'], $name, $default

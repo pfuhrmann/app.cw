@@ -18,6 +18,14 @@ body {
     color: darkred;
 }
 
+.tall {
+    height: 137px;
+}
+
+.table>tbody>tr>td {
+    vertical-align: middle;
+}
+
 @media (min-width: 768px) {
     .navbar-right {
         margin-right: 0;
