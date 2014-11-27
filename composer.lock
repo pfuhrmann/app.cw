@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9e7a542d0d82fa5594b3e69acedc8c45",
+    "hash": "8ba6ab3767a518fd7093bb29d38fa450",
     "packages": [
         {
             "name": "gregwar/cache",
@@ -143,17 +143,20 @@
         },
         {
             "name": "ircmaxell/password-compat",
-            "version": "1.0.3",
+            "version": "v1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ircmaxell/password_compat.git",
-                "reference": "1fc1521b5e9794ea77e4eca30717be9635f1d4f4"
+                "reference": "5c5cde8822a69545767f7c7f3058cb15ff84614c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ircmaxell/password_compat/zipball/1fc1521b5e9794ea77e4eca30717be9635f1d4f4",
-                "reference": "1fc1521b5e9794ea77e4eca30717be9635f1d4f4",
+                "url": "https://api.github.com/repos/ircmaxell/password_compat/zipball/5c5cde8822a69545767f7c7f3058cb15ff84614c",
+                "reference": "5c5cde8822a69545767f7c7f3058cb15ff84614c",
                 "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
             },
             "type": "library",
             "autoload": {
@@ -168,7 +171,7 @@
             "authors": [
                 {
                     "name": "Anthony Ferrara",
-                    "email": "ircmaxell@ircmaxell.com",
+                    "email": "ircmaxell@php.net",
                     "homepage": "http://blog.ircmaxell.com"
                 }
             ],
@@ -178,7 +181,54 @@
                 "hashing",
                 "password"
             ],
-            "time": "2013-04-30 19:58:08"
+            "time": "2014-11-20 16:49:30"
+        },
+        {
+            "name": "kilte/pagination",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Kilte/pagination.git",
+                "reference": "aa7158d09d21e7354a3038b6eb7d58bedff09d4b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Kilte/pagination/zipball/aa7158d09d21e7354a3038b6eb7d58bedff09d4b",
+                "reference": "aa7158d09d21e7354a3038b6eb7d58bedff09d4b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "@stable"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Kilte\\Pagination\\": "source"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kilte Leichnam",
+                    "email": "nwotnbm@gmail.com"
+                }
+            ],
+            "description": "Simple pagination",
+            "keywords": [
+                "pagination"
+            ],
+            "time": "2014-08-31 13:04:43"
         },
         {
             "name": "phroute/phroute",

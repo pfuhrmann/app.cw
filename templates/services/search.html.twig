@@ -29,8 +29,8 @@
                 {# Search by sitter type #}
                 <div class="row push-top">
                     <div class="form-group">
-                        <label for="type" class="col-sm-6 control-label">By Sitter Type</label>
-                        <div class="col-sm-6">
+                        <label for="type" class="col-sm-5 control-label push-bottom">By Sitter Type</label>
+                        <div class="col-sm-5 push-bottom">
                             <select class="form-control" name="type" id="type">
                                 <option value="Sitter" {% if input.type == 'Sitter' %}selected="selected"{% endif %}>Sitter</option>
                                 <option value="Babysitter" {% if input.type == 'Babysitter' %}selected="selected"{% endif %}>Babysitter</option>
@@ -39,19 +39,23 @@
                                 <option value="Plantsitter" {% if input.type == 'Plantsitter' %}selected="selected"{% endif %}>Plantsitter</option>
                             </select>
                         </div>
+                        <div class="col-sm-2 push-bottom">
+                            <button type="submit" class="btn btn-primary" name="by-type">Search</button>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" name="by-type">Search</button>
                 </div>
 
                 {# Search by postcode #}
                 <div class="row">
                     <div class="form-group">
-                        <label for="postcode" class="col-sm-6 control-label">By Postcode</label>
-                        <div class="col-sm-6">
+                        <label for="postcode" class="col-sm-5 control-label push-bottom">By Postcode</label>
+                        <div class="col-sm-5 push-bottom">
                             <input type="text" size="11" class="form-control" id="postcode" name="postcode" value="{{ input.postcode }}" />
                         </div>
+                        <div class="col-sm-2 push-bottom">
+                            <button type="submit" class="btn btn-primary" name="by-postcode">Search</button>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" name="by-postcode">Search</button>
                 </div>
             </div>
 
@@ -66,9 +70,13 @@
                 {# Filter With Image Only #}
                 <div class="row push-bottom push-top">
                     <div class="form-group">
-                        <label for="postcode" class="col-sm-8 control-label">Only With Image</label>
-                        <input type="checkbox" class="form-control" id="imageonly" name="imageonly"{% if input.imageonly == 'on' %} checked="checked"{% endif %} />
-                        <input type="hidden" name="search-type" value="{{ input.searchType }}" />
+                        <label for="postcode" class="col-xs-3 col-sm-6 control-label push-bottom">Only With Image</label>
+                        <div class="col-xs-2 col-lg-1 push-bottom">
+                            <input type="checkbox" class="form-control" id="imageonly" name="imageonly"{% if input.imageonly == 'on' %} checked="checked"{% endif %} />
+                        </div>
+                        <div class="col-xs-2 col-lg-1 push-bottom">
+                            <input type="hidden" name="search-type" value="{{ input.searchType }}" />
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-warning btn-sm">Filter</button>
                 </div>
