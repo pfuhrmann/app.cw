@@ -273,7 +273,7 @@ class ServicesController extends BaseController
         }
 
         // Validate postcode
-        $postcodeValidator = Validator::alnum()->length(3, 9)->postcode()->notEmpty();
+        $postcodeValidator = Validator::alnum()->length(5, 9)->postcode()->notEmpty();
         try {
             $postcodeValidator->assert($data['postcode']);
         } catch(\InvalidArgumentException $e) {

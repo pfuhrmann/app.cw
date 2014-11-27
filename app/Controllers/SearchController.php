@@ -73,19 +73,38 @@ class SearchController extends BaseController
             } catch(\InvalidArgumentException $e) {
                 $errors['postcode'] = array_filter($e->findMessages([
                     'alnum'        => '<strong>Postcode</strong> must contain only letters and digits',
-                    'length'       => '<strong>Postcode</strong> must be between 5 and 9 characters',
+                    'length'       => '<strong>Postcode</strong> must be between 3 and 9 characters',
                     'notEmpty'     => '<strong>Postcode</strong> cannot be empty',
                     'postcode'     => '<strong>Postcode</strong> is invalid. Only Royal Borought of Greenwich districts are allowed. Example: SE10 9ED',
                 ]));
             }
-        }
 
-        // We get errors so display form again
-        if (!empty($errors)) {
-            return $this->render('services/search.html', [
-                'input'     => $formData,
-                'errorsAll' => $errors,
-            ]);
+            // We get errors so display form again
+            if (!empty($errors)) {
+                return $this->render('services/search.html', [
+                    'input'     => $formData,
+                    'errorsAll' => $errors,
+                ]);
+            }
+
+            // Search for only posts with images
+            if ($imageOnly) {
+                $query = "SELECT s.*, i.name, i.alt FROM service s
+                            INNER JOIN account a ON s.account_id = a.id
+                            INNER JOIN image i ON a.id = i.account_id
+                          WHERE s.postcode LIKE ?
+                            AND i.defaultimg = 1";
+                $stmt = $this->db->prepare($query);
+            } else {
+                $query = "SELECT s.*, i.name, i.alt FROM service s
+                            INNER JOIN account a ON s.account_id = a.id
+                            LEFT JOIN image i ON a.id = i.account_id
+                          WHERE s.postcode LIKE ?
+                            AND IF ((SELECT COUNT(*) FROM image WHERE account_id = i.account_id), i.defaultimg = 1, 1=1)";
+                $stmt = $this->db->prepare($query);
+            }
+            $stmt->execute(['%'.$formData['postcode'].'%']);
+            $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         return $this->render('services/search.html', [
