@@ -109,10 +109,6 @@ class AuthenticationController extends BaseController
         ]);
         $user_id = $this->db->lastInsertId();
 
-        // Create empty service in DB
-        $stmt = $this->db->prepare("INSERT INTO service (account_id) VALUES (?)");
-        $stmt->execute([$user_id]);
-
         // Send verification email
         $subject = 'Confirm your sitter\'s account';
         $message = "Hello ".$formData['username']."! You activation code is: ".$code;
