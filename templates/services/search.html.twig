@@ -82,12 +82,12 @@
                         </thead>
                         <tbody>
                         {% for post in posts %}
-                            <tr>
-                                <td>{{ post.id }}</td>
-                                <td>{{ post.business }}</td>
-                                <td>{{ post.postcode }}</td>
-                                <td>{{ post.type }}</td>
-                                <td>
+                            <tr class="tall">
+                                <td>{% if post.alt is not empty %}<img src="uploads/{{ post.name }}_small" alt="{{ post.alt }}" />{% endif %}</td>
+                                <td class="center">{{ post.business }}</td>
+                                <td class="center">{{ post.postcode }}</td>
+                                <td class="center">{{ post.type }}</td>
+                                <td class="center">
                                     <a href="index.php?uri=service-details&#38;id={{ post.id }}" title="View service details" class="btn btn-sm btn-info">Details</a>
                                 </td>
                             </tr>

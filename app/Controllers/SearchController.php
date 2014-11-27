@@ -26,18 +26,19 @@ class SearchController extends BaseController
     public function postSearch()
     {
         $formData = $_POST;
-        var_dump($formData);
 
         // Get search type
         if (isset($formData['by-type'])) {
             $searchType = 'type';
+            $formData['imageonly'] = false;
         } elseif (isset($formData['by-postcode'])) {
             $searchType = 'postcode';
+            $formData['imageonly'] = false;
         } else {
             $searchType = $formData['search-type'];
         }
         $formData['searchType'] = $searchType;
-        $imageOnly = (isset($formData['imageonly']) && $formData['imageonly'] === 'on') ? true : false;
+        $imageOnly = (isset($formData['imageonly']) && $formData['imageonly'] === 'on');
 
         // Search by sitter type
         if ($searchType === 'type') {
@@ -45,15 +46,19 @@ class SearchController extends BaseController
 
             // Search for only posts with images
             if ($imageOnly) {
-                $query = "SELECT s.*, COUNT(i.id) as imagecount FROM service s
-                          INNER JOIN account a ON s.account_id=a.id
-                          INNER JOIN image i ON a.id=i.account_id
+                $query = "SELECT s.*, i.name, i.alt FROM service s
+                            INNER JOIN account a ON s.account_id = a.id
+                            INNER JOIN image i ON a.id = i.account_id
                           WHERE s.type=?
-                          GROUP BY s.id
-                          HAVING imagecount > 0";
+                            AND i.defaultimg = 1";
                 $stmt = $this->db->prepare($query);
             } else {
-                $stmt = $this->db->prepare("SELECT * FROM service WHERE type=?");
+                $query = "SELECT s.*, i.name, i.alt FROM service s
+                            INNER JOIN account a ON s.account_id = a.id
+                            LEFT JOIN image i ON a.id = i.account_id
+                          WHERE s.type=?
+                            AND IF ((SELECT COUNT(*) FROM image WHERE account_id = i.account_id), i.defaultimg = 1, 1=1)";
+                $stmt = $this->db->prepare($query);
             }
             $stmt->execute([$formData['type']]);
             $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
