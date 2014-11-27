@@ -182,16 +182,30 @@ class ServicesController extends BaseController
             ]);
         }
 
-        // Save file thumb
+        // Store image
         $name = md5($_FILES['file']['tmp_name'].time());
+        // Save original
         Image::open($_FILES['file']['tmp_name'])
-            ->resize(290, 190)
-            ->save('uploads/'.$name);
+            ->save('uploads/'.$name.'_original');
+        // Save thumb large
+        Image::open($_FILES['file']['tmp_name'])
+            ->resize(250, 150)
+            ->save('uploads/'.$name.'_large');
+        // Save thumb small
+        Image::open($_FILES['file']['tmp_name'])
+            ->resize(120, 120)
+            ->save('uploads/'.$name.'_small');
 
         // Store image ref in DB
-        $stmt = $this->db->prepare("INSERT INTO image (account_id, alt, name) VALUES (?, ?, ?)");
+        $default = ($formData['default'] === 'on');
+        if ($default) {
+            // New default image update old default (if any)
+            $stmt = $this->db->prepare("UPDATE image SET defaultimg=0 WHERE account_id=? AND defaultimg=1 LIMIT 1");
+            $stmt->execute([$_SESSION['user']['id']]);
+        }
+        $stmt = $this->db->prepare("INSERT INTO image (account_id, alt, name, defaultimg) VALUES (?, ?, ?, ?)");
         $stmt->execute([
-            $_SESSION['user']['id'], $formData['title'], $name
+            $_SESSION['user']['id'], $formData['title'], $name, $default
         ]);
 
         return $this->redirect('services');
@@ -212,9 +226,12 @@ class ServicesController extends BaseController
         $stmt = $this->db->prepare("DELETE FROM image WHERE account_id=? AND id=? LIMIT 1");
         $stmt->execute([$_SESSION['user']['id'], $_GET['id']]);
 
-        // Delete file
-        if (isset($image['name']))
-        unlink('uploads/'.$image['name']);
+        // Delete images
+        if (isset($image['name'])) {
+            unlink('uploads/'.$image['name'].'_original');
+            unlink('uploads/'.$image['name'].'_small');
+            unlink('uploads/'.$image['name'].'_large');
+        }
 
         return $this->redirect('services');
     }
