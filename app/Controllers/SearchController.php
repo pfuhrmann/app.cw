@@ -18,7 +18,7 @@ class SearchController extends BaseController
     public function anySearch()
     {
         // Initial page request
-        if (!isset($_POST) && !isset($_SESSION['search-data'])) {
+        if ((!isset($_POST) || empty($_POST)) && !isset($_GET['page'])) {
             return $this->render('services/search.html', []);
         }
 
