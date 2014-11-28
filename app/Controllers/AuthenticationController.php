@@ -194,7 +194,9 @@ class AuthenticationController extends BaseController
      */
     public function getLogin()
     {
-        echo $this->render('authentication/login.html', []);
+        echo $this->render('authentication/login.html', [
+            'username' => (isset($_COOKIE['username'])) ? $_COOKIE['username'] : '',
+        ]);
     }
 
     /**
@@ -246,6 +248,7 @@ class AuthenticationController extends BaseController
         }
 
         // All good, redirect to main page
+        setcookie('username', $formData['username'], time() + (86400 * 30)); // 30 days
         $_SESSION['user']['active'] = '1';
         $_SESSION['user']['id'] = $row['id'];
         return $this->redirect();
