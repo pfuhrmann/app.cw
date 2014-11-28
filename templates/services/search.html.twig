@@ -92,7 +92,7 @@
                     {% if currentPage == key %}
                         {{ key }}
                     {% else %}
-                        <a href="index.php?uri=search&page={{ key }}">{{ key }}</a>
+                        <a href="index.php?uri=search&#38;page={{ key }}">{{ key }}</a>
                     {% endif %}
                     {% if not loop.last %},{% endif %}
                 {% endfor %}
@@ -100,16 +100,22 @@
                 <div class="row push-bottom">
                     <table class="table">
                         <thead>
-                        <tr><th>Image</th><th>Name</th><th>Postcode</th><th>Type</th><th>Details</th></tr>
+                        <tr>
+                            <th id="image">Image</th>
+                            <th id="name">Name</th>
+                            <th id="location">Postcode</th>
+                            <th id="sittertype">Type</th>
+                            <th id="details">Details</th>
+                        </tr>
                         </thead>
                         <tbody>
                         {% for post in posts %}
                             <tr class="tall">
-                                <td>{% if post.alt is not empty %}<img src="uploads/{{ post.name }}_small" alt="{{ post.alt }}" />{% endif %}</td>
-                                <td class="center">{{ post.business }}</td>
-                                <td class="center">{{ post.postcode }}</td>
-                                <td class="center">{{ post.type }}</td>
-                                <td class="center">
+                                <td headers="image">{% if post.alt is not empty %}<img src="uploads/{{ post.name }}_small" alt="{{ post.alt }}" />{% endif %}</td>
+                                <td headers="name" class="center">{{ post.business }}</td>
+                                <td headers="location" class="center">{{ post.postcode }}</td>
+                                <td headers="sittertype" class="center">{{ post.type }}</td>
+                                <td headers="details" class="center">
                                     <a href="index.php?uri=service-details&#38;id={{ post.id }}" title="View service details" class="btn btn-sm btn-info">Details</a>
                                 </td>
                             </tr>

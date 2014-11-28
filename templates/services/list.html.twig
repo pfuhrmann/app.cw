@@ -20,16 +20,22 @@
             <div class="row push-bottom">
                 <table class="table">
                 <thead>
-                    <tr><th>ID</th><th>Name</th><th>Postcode</th><th>Type</th><th>Action</th></tr>
+                    <tr>
+                        <th id="id">ID</th>
+                        <th id="name">Name</th>
+                        <th id="postcode">Postcode</th>
+                        <th id="type">Type</th>
+                        <th id="action">Action</th>
+                    </tr>
                 </thead>
                 <tbody>
                 {% for post in posts %}
                     <tr>
-                        <td>{{ post.id }}</td>
-                        <td>{{ post.business }}</td>
-                        <td>{{ post.postcode }}</td>
-                        <td>{{ post.type }}</td>
-                        <td>
+                        <td headers="id">{{ post.id }}</td>
+                        <td headers="name">{{ post.business }}</td>
+                        <td headers="postcode">{{ post.postcode }}</td>
+                        <td headers="type">{{ post.type }}</td>
+                        <td headers="action">
                             <a href="index.php?uri=post-details&#38;id={{ post.id }}" title="View post" class="btn btn-sm btn-info">View</a>
                             <a href="index.php?uri=update-service&#38;id={{ post.id }}" title="Update post" class="btn btn-sm btn-warning">Update</a>
                             <a href="index.php?uri=delete-service&#38;id={{ post.id }}" title="Delete post" class="service btn btn-sm btn-danger">Delete</a>
