@@ -56,13 +56,14 @@
 
     <script type="text/javascript" src="assets/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="assets/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="assets/jquery-confirm/jquery.confirm.min.js"></script>
     <script type="text/javascript" src="http://app.cookieassistant.com/widget.js?token=BSivwaOedvH7JknC5tJ93Q"></script>
 
     <script type="text/javascript">
         // Confirm logout
-        $("#logout").click(function() {
-            var conf = confirm("Are you sure you want to logout?");
-            return conf;
+        $("#logout").confirm({
+            text: "Are you sure you want to logout?",
+            title: "Confirmation required"
         });
     </script>
 

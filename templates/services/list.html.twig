@@ -75,15 +75,15 @@
 {% block javascript %}
 <script type="text/javascript">
     // Confirm service deletion
-    $(".service").click(function() {
-        var conf = confirm("Are you sure you want to delete this post?");
-        return conf;
+    $(".service").confirm({
+        text: "Are you sure you want to delete this service?",
+        title: "Confirmation required"
     });
 
     // Confirm image deletion
-    $(".red").click(function() {
-        var conf = confirm("Are you sure you want to delete this image?");
-        return conf;
+    $(".red").confirm({
+        text: "Are you sure you want to delete this image?",
+        title: "Confirmation required"
     });
 </script>
 {% endblock %}

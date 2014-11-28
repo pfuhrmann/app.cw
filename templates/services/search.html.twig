@@ -128,6 +128,19 @@
                     <p class="red"><strong>No results found, please refine your search.</strong></p>
                 </div>
                 {% endif %}
+
+                {# Display pagination #}
+                {% if not pages is empty %}
+                    <strong>Pages:</strong>
+                {% endif %}
+                {% for key, page in pages %}
+                    {% if currentPage == key %}
+                        {{ key }}
+                    {% else %}
+                        <a href="index.php?uri=search&#38;page={{ key }}">{{ key }}</a>
+                    {% endif %}
+                    {% if not loop.last %},{% endif %}
+                {% endfor %}
             </div>
             {% endif %}
         </form>
