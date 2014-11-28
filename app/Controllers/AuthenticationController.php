@@ -148,6 +148,7 @@ class AuthenticationController extends BaseController
 
     /**
      * Handle verification form
+     * POST verify
      */
     public function postVerify()
     {
@@ -198,6 +199,7 @@ class AuthenticationController extends BaseController
 
     /**
      * Handle login form
+     * POST login
      */
     public function postLogin()
     {
@@ -251,12 +253,22 @@ class AuthenticationController extends BaseController
 
     /**
      * Log user out of system
+     * GET verify
      */
     public function getLogout()
     {
         session_destroy();
 
         return $this->redirect();
+    }
+
+    /**
+     * Display Cookies Policy page
+     * GET cookies
+     */
+    public function getCookies()
+    {
+        return $this->render('cookie.html', []);
     }
 
     /**
