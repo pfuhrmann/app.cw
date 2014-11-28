@@ -12,21 +12,24 @@ use Kilte\Pagination\Pagination;
 class SearchController extends BaseController
 {
     /**
-     * Search Sitters
-     * GET search
+     * Search for Sitters
+     * GET/POST search
      */
-    public function getSearch()
+    public function anySearch()
     {
-        return $this->render('services/search.html', []);
-    }
+        // Initial page request
+        if (!isset($_POST) && !isset($_SESSION['search-data'])) {
+            return $this->render('services/search.html', []);
+        }
 
-    /**
-     * Handle Search Sitters form
-     * POST search
-     */
-    public function postSearch()
-    {
-        $formData = $_POST;
+        // Store form data to Session initially
+        if (!isset($_GET['page'])) {
+            $formData = $_POST;
+            $_SESSION['search-data'] = $formData;
+        } else {
+            $formData = $_SESSION['search-data'];
+        }
+
         $currentPage = (isset($_GET['page'])) ? $_GET['page'] : 1;
         $itemsPerPage = 5;
 
@@ -187,6 +190,8 @@ class SearchController extends BaseController
         return $this->render('services/search.html', [
             'posts' => $posts,
             'input' => $formData,
+            'pages' => $pagination->build(),
+            'currentPage' => $currentPage,
         ]);
     }
 
