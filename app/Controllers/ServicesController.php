@@ -64,7 +64,7 @@ class ServicesController extends BaseController
     public function postAddService()
     {
         $formData = $_POST;
-        $errors = $this->validateServiceDetails($formData);
+        $errors = $this->validator->post($formData);
 
         // We get errors so display form again
         if (!empty($errors)) {
@@ -104,7 +104,7 @@ class ServicesController extends BaseController
     {
         $serviceID = $_GET['id'];
         $formData = $_POST;
-        $errors = $this->validateServiceDetails($formData);
+        $errors = $this->validator->post($formData);
 
         // We get errors so display form again
         if (!empty($errors)) {
@@ -154,18 +154,7 @@ class ServicesController extends BaseController
     public function postAddPicture()
     {
         $formData = $_POST;
-        $errors = [];
-
-        // Validate picture title
-        $pictureTitleValidator = Validator::length(2, 15)->notEmpty();
-        try {
-            $pictureTitleValidator->assert($formData['title']);
-        } catch(\InvalidArgumentException $e) {
-            $errors['picture'] = array_filter($e->findMessages([
-                'length'   => '<strong>Picture title</strong> must be between 2 and 15 characters',
-                'notEmpty' => '<strong>Picture title</strong> cannot be empty',
-            ]));
-        }
+        $errors = $this->validator->picture($formData);
 
         // Validate file
         if (empty($_FILES['file']['tmp_name'])) {
@@ -251,40 +240,5 @@ class ServicesController extends BaseController
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $row;
-    }
-
-    /**
-     * @param $data
-     * @return mixed
-     */
-    private function validateServiceDetails($data)
-    {
-        $errors = [];
-
-        // Validate business name
-        $businessNameValidator = Validator::length(3, 30)->notEmpty();
-        try {
-            $businessNameValidator->assert($data['business']);
-        } catch(\InvalidArgumentException $e) {
-            $errors['business'] = array_filter($e->findMessages([
-                'length'       => '<strong>Business name</strong> must be between 3 and 30 characters',
-                'notEmpty'     => '<strong>Business name</strong> cannot be empty',
-            ]));
-        }
-
-        // Validate postcode
-        $postcodeValidator = Validator::alnum()->length(5, 9)->postcode()->notEmpty();
-        try {
-            $postcodeValidator->assert($data['postcode']);
-        } catch(\InvalidArgumentException $e) {
-            $errors['postcode'] = array_filter($e->findMessages([
-                'alnum'        => '<strong>Postcode</strong> must contain only letters and digits',
-                'length'       => '<strong>Postcode</strong> must be between 5 and 9 characters',
-                'notEmpty'     => '<strong>Postcode</strong> cannot be empty',
-                'postcode'     => '<strong>Postcode</strong> is invalid. Only Royal Borought of Greenwich districts are allowed. Example: SE10 9ED',
-            ]));
-        }
-
-        return $errors;
     }
 }
