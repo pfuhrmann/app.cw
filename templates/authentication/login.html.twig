@@ -10,7 +10,10 @@
 
     <div class="col-md-10 column">
         <div class="jumbotron">
-            {# Display errors #}
+            {# JS errors #}
+            <div class="alert alert-danger hidden" id="errors"></div>
+
+            {# PHP errors #}
             {% autoescape false %}
             {% if not errorsAll is empty %}
                 <div class="alert alert-danger">
@@ -41,7 +44,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <p><button type="submit" class="btn btn-success">Sign in</button></p>
+                        <p><button type="submit" class="btn btn-success" id="submit">Sign in</button></p>
                     </div>
                 </div>
             </form>
@@ -49,3 +52,20 @@
     </div>
 </div>
 {% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        // Validate form
+        var checkRun = false;
+        $("#submit").on("click", function(event) {
+            validate(event, 'validate-login');
+        });
+
+        // Confirm image deletion
+        $(".red").confirm({
+            text: "Are you sure you want to delete this image?",
+            title: "Confirmation required"
+        });
+    </script>
+{% endblock %}
+
