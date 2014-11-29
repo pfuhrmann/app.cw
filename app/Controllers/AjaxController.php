@@ -43,4 +43,48 @@ class AjaxController
 
         return json_encode($errors);
     }
+
+    /**
+     * Validate verify form
+     * POST /validate-verify
+     */
+    public function postValidateVerify()
+    {
+        $errors = $this->validator->verify($_POST);
+
+        return json_encode($errors);
+    }
+
+    /**
+     * Validate post form
+     * POST /validate-post
+     */
+    public function postValidatePost()
+    {
+        $errors = $this->validator->post($_POST);
+
+        return json_encode($errors);
+    }
+
+    /**
+     * Validate picture form
+     * POST /validate-picture
+     */
+    public function postValidatePicture()
+    {
+        $errors = $this->validator->picture($_POST);
+
+        return json_encode($errors);
+    }
+
+    /**
+     * Validate postcode
+     * POST /validate-postcode
+     */
+    public function postValidatePostcode()
+    {
+        $errors = $this->validator->postcode($_POST);
+
+        return json_encode($errors);
+    }
 }

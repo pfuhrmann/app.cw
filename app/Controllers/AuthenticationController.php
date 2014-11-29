@@ -106,23 +106,7 @@ class AuthenticationController extends BaseController
     public function postVerify()
     {
         $formData = $_POST;
-        $errors = [];
-
-        // Get code for this user
-        $stmt = $this->db->prepare("SELECT code FROM account WHERE username=? LIMIT 1");
-        $stmt->execute([$_SESSION['user']['username']]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        // Validate code
-        $codeValidator = Validator::equals($row['code'])->notEmpty();
-        try {
-            $codeValidator->assert($formData['code']);
-        } catch(\InvalidArgumentException $e) {
-            $errors['code'] = array_filter($e->findMessages([
-                'equals'   => '<strong>Code</strong> entered is invalid, please recheck your verification email',
-                'notEmpty' => 'Please provide activation <strong>code</strong>, which you received in the verification email',
-            ]));
-        }
+        $errors = $this->validator->verify($formData);
 
         // We get errors so display verify form again
         if (!empty($errors)) {

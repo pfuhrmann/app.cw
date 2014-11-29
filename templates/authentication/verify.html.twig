@@ -9,7 +9,10 @@
     </div>
     <div class="col-md-10 column">
         <div class="jumbotron">
-            {# Display errors #}
+            {# JS errors #}
+            <div class="alert alert-danger hidden" id="errors"></div>
+
+            {# PHP errors #}
             {% autoescape false %}
             {% if not errorsAll is empty %}
                 <div class="alert alert-danger">
@@ -41,11 +44,21 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <p><button type="submit" class="btn btn-default">Verify Account</button></p>
+                        <p><button type="submit" class="btn btn-default" id="submit">Verify Account</button></p>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        // Validate form
+        var checkRun = false;
+        $("#submit").on("click", function(event) {
+            validate(event, 'validate-verify');
+        });
+    </script>
 {% endblock %}

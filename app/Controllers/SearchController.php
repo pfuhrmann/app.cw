@@ -112,17 +112,7 @@ class SearchController extends BaseController
             $formData['type'] = '';
 
             // Validate postcode
-            $postcodeValidator = Validator::alnum()->length(3, 9)->postcode()->notEmpty();
-            try {
-                $postcodeValidator->assert($formData['postcode']);
-            } catch(\InvalidArgumentException $e) {
-                $errors['postcode'] = array_filter($e->findMessages([
-                    'alnum'        => '<strong>Postcode</strong> must contain only letters and digits',
-                    'length'       => '<strong>Postcode</strong> must be between 3 and 9 characters',
-                    'notEmpty'     => '<strong>Postcode</strong> cannot be empty',
-                    'postcode'     => '<strong>Postcode</strong> is invalid. Only Royal Borought of Greenwich districts are allowed. Example: SE10 9ED',
-                ]));
-            }
+            $errors = $this->validator->postcode($formData);
 
             // We get errors so display form again
             if (!empty($errors)) {
