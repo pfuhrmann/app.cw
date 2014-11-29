@@ -7,7 +7,7 @@ require 'vendor/autoload.php';
 
 // Bootstrap Twig
 $loader = new Twig_Loader_Filesystem('templates');
-$twig = new Twig_Environment($loader,['debug' => true]);
+$twig = new Twig_Environment($loader, ['debug' => true]);
 $twig->addExtension(new COMP1687\CW\SessionTwigExtension());
 $twig->addExtension(new Twig_Extension_Debug());
 
@@ -24,6 +24,7 @@ $router->filter('auth', function() {
 $router->controller('/', new COMP1687\CW\Controllers\AuthenticationController($twig));
 $router->controller('/', new COMP1687\CW\Controllers\ServicesController($twig), ['before' => 'auth']);
 $router->controller('/', new COMP1687\CW\Controllers\SearchController($twig));
+$router->controller('/', new COMP1687\CW\Controllers\AjaxController());
 $dispatcher = new Phroute\Dispatcher($router);
 
 // This is hack for stuweb web server

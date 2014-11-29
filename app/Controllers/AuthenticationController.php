@@ -40,54 +40,7 @@ class AuthenticationController extends BaseController
     public function postRegistration()
     {
         $formData = $_POST;
-        $errors = [];
-
-        // Validate username
-        $usernameValidator = Validator::alnum()->noWhitespace()->length(3, 15)->notEmpty()->uniqueUser();
-        try {
-            $usernameValidator->assert($formData['username']);
-        } catch(\InvalidArgumentException $e) {
-            $errors['username'] = array_filter($e->findMessages([
-                'alnum'        => '<strong>Username</strong> must contain only letters and digits',
-                'length'       => '<strong>Username</strong> must be between 3 and 15 characters',
-                'noWhitespace' => '<strong>Username</strong> cannot contain spaces',
-                'notEmpty'     => '<strong>Username</strong> cannot be empty',
-                'uniqueUser'   => 'This <strong>username</strong> is taken, please choose another one',
-            ]));
-        }
-
-        // Validate password
-        $passwordValidator = Validator::length(6, 20)->notEmpty();
-        try {
-            $passwordValidator->assert($formData['password']);
-        } catch(\InvalidArgumentException $e) {
-            $errors['password'] = array_filter($e->findMessages([
-                'notEmpty' => '<strong>Password</strong> cannot be empty',
-                'length'   => '<strong>Password</strong> length must be between 6 and 20 characters'
-            ]));
-        }
-
-        // Validate email
-        $emailValidator = Validator::email()->notEmpty();
-        try {
-            $emailValidator->assert($formData['email']);
-        } catch(\InvalidArgumentException $e) {
-            $errors['email'] = array_filter($e->findMessages([
-                'notEmpty' => '<strong>Email</strong> cannot be empty',
-                'email'    => '<strong>Email</strong> is not valid',
-            ]));
-        }
-
-        // Validate captcha
-        $captchaValidator = Validator::equals($_SESSION['phrase'])->notEmpty();
-        try {
-            $captchaValidator->assert($formData['captcha']);
-        } catch(\InvalidArgumentException $e) {
-            $errors['captcha'] = array_filter($e->findMessages([
-                'notEmpty' => '<strong>CAPTCHA</strong> cannot be empty',
-                'equals'   => 'Incorrect <strong>CAPTCHA</strong>, please try again',
-            ]));
-        }
+        $errors = $this->validator->registration($formData);
 
         // We get errors so display reg form again
         if (!empty($errors)) {
@@ -107,7 +60,7 @@ class AuthenticationController extends BaseController
         $stmt->execute([
             $formData['username'], $pass, $formData['email'], $code
         ]);
-        $user_id = $this->db->lastInsertId();
+        $userId = $this->db->lastInsertId();
 
         // Send verification email
         $subject = 'Confirm your sitter\'s account';
@@ -118,7 +71,7 @@ class AuthenticationController extends BaseController
         $_SESSION['user']['username'] = $formData['username'];
         $_SESSION['user']['email'] = $formData['email'];
         $_SESSION['user']['active'] = '0';
-        $_SESSION['user']['id'] = $user_id;
+        $_SESSION['user']['id'] = $userId;
 
         // Redirect to verification page
         return $this->redirect('verify');
@@ -206,21 +159,7 @@ class AuthenticationController extends BaseController
     public function postLogin()
     {
         $formData = $_POST;
-        $errors = [];
-
-        // Validate username
-        $usernameValidator = Validator::allOf(Validator::notEmpty(), Validator::uniqueUser()->not());
-        if (!$usernameValidator->validate($formData['username'])) {
-            $error['login']['false'] = 'Incorrect <strong>username</strong> or <strong>password</strong>';
-        }
-
-        // Validate password
-        $passwordValidator = Validator::notEmpty()->passwordMatches($formData['username']);
-        try {
-            $passwordValidator->assert($formData['password']);
-        } catch(\InvalidArgumentException $e) {
-            $errors['login']['false'] = 'Incorrect <strong>username</strong> or <strong>password</strong>';
-        }
+        $errors = $this->validator->login($formData);
 
         // We get errors so display login page again
         if (!empty($errors)) {

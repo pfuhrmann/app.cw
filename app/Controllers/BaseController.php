@@ -3,6 +3,7 @@
 namespace COMP1687\CW\Controllers;
 
 use COMP1687\CW\DatabaseManager;
+use COMP1687\CW\ValidationHelper;
 use PDO;
 use Twig_Environment;
 
@@ -19,12 +20,18 @@ abstract class BaseController
     protected $db;
 
     /**
+     * @var ValidationHelper
+     */
+    protected $validator;
+
+    /**
      * @param Twig_Environment $twig
      */
     public function __construct(Twig_Environment $twig)
     {
         $this->twig = $twig;
         $this->db = DatabaseManager::getInstance();
+        $this->validator = ValidationHelper::getInstance();
     }
 
     /**
