@@ -3,3 +3,4 @@
 /vendor/
 uploads/
 cache/
+app/DatabaseManager.php
