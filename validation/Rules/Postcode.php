@@ -16,6 +16,6 @@ class Postcode extends AbstractRule
     {
         $district = explode(' ', $input)[0];
 
-        return (in_array($district, $this->allowedDistricts));
+        return (in_array(strtoupper($district), $this->allowedDistricts));
     }
 }
